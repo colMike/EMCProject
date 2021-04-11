@@ -1,0 +1,522 @@
+<div class="page" ng-controller="usersCtrl">
+	<form class="formFadeIn" role="form" ng-hide="classSelectMode==true">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span> User </strong>
+			</div>
+			<div class="panel-body">
+				<div class="form-inline col-sm-12 noPadding">
+					<div class="form-group col-sm-6 noPadding"
+						style="padding-right: 1px">
+						<label for="classSelect" class="col-sm-3 control-label input-sm"
+							style="text-align: right;">Select Class</label>
+
+						<div class="col-sm-9 noPadding">
+							<select style="width: 100%" ui-select2="classSelect"
+								ng-model="classSelect" id="classSelect" ng-disabled="isDisabled">
+								<option data-ng-repeat="class in classes"
+									value="{{class.classId}}">{{class.className}}</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6 noPadding"
+						ng-hide="organizationListMode == false" style="padding-right: 1px">
+						<label for="organizationSelect"
+							class="col-sm-3 control-label input-sm"
+							style="text-align: right;">Select Organization</label>
+
+						<div class="col-sm-9 noPadding">
+							<select style="width: 100%" ui-select2="organizationSelect"
+								ng-model="organizationSelect" id="organizationSelect"
+								ng-disabled="isDisabled">
+								<option data-ng-repeat="organization in organizations"
+									value="{{organization.organizationId}}">{{organization.organizationName}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group col-sm-6 noPadding"
+						ng-hide="merchantListMode == false" style="padding-right: 1px">
+						<label for="merchantSelect"
+							class="col-sm-3 control-label input-sm"
+							style="text-align: right;">Select Merchant</label>
+
+						<div class="col-sm-9 noPadding">
+							<select style="width: 100%" ui-select2="merchantSelect"
+								ng-model="merchantSelect" id="merchantSelect"
+								ng-disabled="isDisabled">
+								<option data-ng-repeat="merchant in merchants"
+									value="{{merchant.merchantId}}">{{merchant.merchantName}}</option>
+							</select>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</section>
+	</form>
+	<form role="form" class="formFadeIn"
+		ng-hide="userEditMode == true || userEnrollment == true ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span> User's
+					List</strong>
+				<button type="button" class="btn btn-primary pull-right"
+					tooltip-placement="left" tooltip="Create New User"
+					style="margin-top: -3px; height: 25px; margin-right: -8px; width: 60px"
+					ng-click="addUser()">
+					<span class="glyphicon glyphicon-plus" style="top: -2px"></span>
+				</button>
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing {{filteredUsers.length}}/{{users.length}}
+							entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+						<th>
+							<div class="th">
+								# <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('userId') "
+									data-ng-class="{active: row == 'userId'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-userId') "
+									data-ng-class="{active: row == '-userId'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Full Name <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('userFullName') "
+									data-ng-class="{active: row == 'userFullName'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-userFullName') "
+									data-ng-class="{active: row == '-userFullName'}"></span>
+							</div>
+						</th>
+
+						<th>
+							<div class="th">
+								Email <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('userEmail') "
+									data-ng-class="{active: row == 'userEmail'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-userEmail') "
+									data-ng-class="{active: row == '-userEmail'}"></span>
+							</div>
+						</th>
+						<th style="width: 60px"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="user in currentPageUsers">
+						<td>{{user.userId}}</td>
+						<td>{{user.userFullName}}</td>
+						<td>{{user.userEmail}}</td>
+						<td style="padding: 1px;">
+							<button type="button" class="btn btn-success"
+								style="height: 25px; width: 60px;" tooltip-placement="top"
+								tooltip="Modify {{user.userName}}" ng-click="editUser(user)">
+								<span class="glyphicon glyphicon-pencil" style="top: -2px;"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredUsers.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="userEditMode == false">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span> User
+					Creation</strong>
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label for="userName" class="col-sm-2 control-label input-sm">User
+						Name</label>
+
+					<div class="col-sm-10">
+						<input type="text" class="form-control input-sm" id="userName"
+							placeholder="User Name" ng-model="userName"
+							ng-disabled="isExisting">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="userFullName" class="col-sm-2 control-label input-sm">Full
+						Name</label>
+
+					<div class="col-sm-10">
+						<input type="text" class="form-control input-sm" id="userFullName"
+							placeholder="Full Name" ng-model="userFullName">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="userPwd" class="col-sm-2 control-label input-sm">Password</label>
+
+					<div class="col-sm-10">
+						<input type="password" class="form-control" id="userPwd"
+							placeholder="Password" ng-model="userPwd">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="groupSelect" class="col-sm-2 control-label input-sm"
+						style="text-align: right;">Select Group</label>
+
+					<div class="col-sm-10">
+						<select style="width: 100%" ui-select2="" ng-model="groupSelect"
+							id="groupSelect">
+							<option data-ng-repeat="group in groups"
+								ng-selected="{{group.groupId}}" value="{{group.groupId}}">{{group.groupName}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group ">
+					<label for="branchSelect" class="col-sm-2 control-label input-sm">Branch</label>
+
+					<div class="col-sm-10">
+						<select style="width: 100%" ui-select2=""
+							ng-model="branchSelect" id="branchSelect">
+							<option data-ng-repeat="branch in branches"
+								value="{{branch.branchId}}">{{branch.branchName}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="agentSelect" class="col-sm-2 control-label input-sm"
+						style="text-align: right;">Select Agent</label>
+
+					<div class="col-sm-10">
+						<select style="width: 100%" ui-select2="" ng-model="agentSelect"
+							id="agentSelect">
+							<option data-ng-repeat="agent in agents"
+								ng-selected="{{agent.agentId}}" value="{{agent.agentId}}">{{agent.agentDesc}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="userEmail" class="col-sm-2 control-label input-sm">Email</label>
+
+					<div class="col-sm-10">
+						<input type="text" class="form-control input-sm" id="userEmail"
+							placeholder="Email" ng-model="userEmail">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="userPhone" class="col-sm-2 control-label input-sm">Phone</label>
+
+					<div class="col-sm-10">
+						<input type="text" class="form-control input-sm" id="userPhone"
+							placeholder="Phone" ng-model="userPhone">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="questionSelect" class="col-sm-2 control-label input-sm"
+						style="text-align: right;">Select Secret Question</label>
+
+					<div class="col-sm-10">
+						<select style="width: 100%" ui-select2=""
+							ng-model="questionSelect" id="questionSelect">
+							<option data-ng-repeat="question in questions"
+								ng-selected="{{question.userSecretQuestionId}}"
+								value="{{question.userSecretQuestionId}}">{{question.userSecretQuestion}}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="userSecretAns" class="col-sm-2 control-label input-sm">Secret
+						Answer</label>
+
+					<div class="col-sm-10">
+						<input type="password" class="form-control input-sm"
+							id="userSecretAns" placeholder="Secret Answer"
+							ng-model="userSecretAns">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="active" class="col-sm-2 control-label input-sm">Active</label>
+
+					<div class="col-sm-10">
+						<label> <input type="checkbox" id="active"
+							ng-model="active" style="margin-top: 10px">
+						</label>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-success input-sm"
+							style="width: 100px" ng-click="updUser()">
+							<span class="glyphicon glyphicon-ok"> Save</span>
+						</button>
+						<button type="button" class="btn btn-warning input-sm"
+							style="width: 100px" ng-click="cancelUser()">
+							<span class="glyphicon glyphicon-remove"> Cancel</span>
+						</button>
+						<button type="button" class="btn btn-primary input-sm"
+							style="width: 100px" ng-click="enrollUser()"
+							ng-hide="userEditMode == false">
+							<span class="glyphicon glyphicon-thumbs-up"> Enroll</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</section>
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="userEnrollment == false">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span> User
+					Enrollment</strong>
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label for="userName" class="col-sm-2 control-label input-sm">User
+						Name</label>
+
+					<div class="col-sm-10">
+						<input type="text" class="form-control input-sm" id="userName"
+							placeholder="User Name" ng-model="userName"
+							ng-disabled="isExisting">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="panel-body" data-ng-controller="EnrollCtrl">
+						<div class="widget-content">
+							<div class="col-lg-12">
+								<div class="form-group col-lg-12">
+									<div class="col-lg-4"></div>
+									<div class="col-lg-4">
+										<div class="row" style="min-height: 320px;">
+											<img src="images/enroll/enroll.png" class="imgFade" /><img
+												src="images/enroll/L0.png" class="fl-L0 imgFade"
+												data-next="fl-L1" /><img src="images/enroll/L1.png"
+												class="fl-L1 imgFade" data-next="fl-L2" /><img
+												src="images/enroll/L2.png" class="fl-L2 imgFade"
+												data-next="fl-L3" /><img src="images/enroll/L3.png"
+												class="fl-L3 imgFade" data-next="fl-L4" /><img
+												src="images/enroll/L4.png" class="fl-L4 imgFade"
+												data-next="fl-R0" /><img src="images/enroll/R0.png"
+												class="fl-R0 imgFade" data-next="fl-R1" /><img
+												src="images/enroll/R1.png" class="fl-R1 imgFade"
+												data-next="fl-R2" /><img src="images/enroll/R2.png"
+												class="fl-R2 imgFade" data-next="fl-R3" /><img
+												src="images/enroll/R3.png" class="fl-R3 imgFade"
+												data-next="fl-R4" /><img src="images/enroll/R4.png"
+												class="fl-R4 imgFade" data-next="x" />
+										</div>
+									</div>
+									<div class="col-lg-4"></div>
+								</div>
+								<div class="col-lg-12">
+									<div class="form-group col-lg-6">
+										<div class="col-lg-12">
+											<div class="row">
+												<table class="table" style="height: 20%;" rowspan="2"
+													colspan="2">
+													<tbody>
+														<tr>
+															<td class="cp-L4 imgCol1" data-href='4|L' data-img='L4'
+																data-pos='5' data-info='Left Little' capture><a
+																href="javascript:;" class="shortcuts shortcut"> <img
+																	src="images/enroll/noImage_1.png">
+															</a></td>
+															<td class="cp-L3 imgCol1" data-href='3|L' data-img='L3'
+																data-pos='4' data-info='Left Ring' capture><a
+																href="javascript:;" class="shortcuts shortcut"> <img
+																	src="images/enroll/noImage_1.png">
+															</a></td>
+															<td class="cp-L2 imgCol1" data-href='2|L' data-img='L2'
+																data-pos='3' data-info='Left Middle' capture><a
+																href="javascript:;" class="shortcuts shortcut"> <img
+																	src="images/enroll/noImage_1.png">
+															</a></td>
+															<td class="cp-L1 imgCol1" data-href='1|L' data-img='L1'
+																data-pos='2' data-info='Left Index' capture><a
+																href="javascript:;" class="shortcuts shortcut"> <img
+																	src="images/enroll/noImage_1.png">
+															</a></td>
+															<td class="cp-L0 imgCol1" data-href='0|L' data-img='L0'
+																data-pos='1' data-info='Left Thumb' capture><a
+																href="javascript:;" class="shortcuts shortcut"> <img
+																	src="images/enroll/noImage_1.png">
+															</a></td>
+														</tr>
+														<tr>
+															<td>
+																<div
+																	class="qt-L4 progressbar-xs progress ng-isolate-scope">
+																	<div class="progress-bar"
+																		ng-class="type &amp;&amp; 'progress-bar-' + type"></div>
+																</div>
+															</td>
+															<td>
+																<div
+																	class="qt-L3 progressbar-xs progress ng-isolate-scope">
+																	<div class="progress-bar"
+																		ng-class="type &amp;&amp; 'progress-bar-' + type"></div>
+																</div>
+															</td>
+															<td>
+																<div
+																	class="qt-L2 progressbar-xs progress ng-isolate-scope">
+																	<div class="progress-bar"
+																		ng-class="type &amp;&amp; 'progress-bar-' + type"></div>
+																</div>
+															</td>
+															<td>
+																<div
+																	class="qt-L1 progressbar-xs progress ng-isolate-scope">
+																	<div class="progress-bar"
+																		ng-class="type &amp;&amp; 'progress-bar-' + type"></div>
+																</div>
+															</td>
+															<td>
+																<!-- <div class="qt-L0 progressx progress-striped active ">
+																	<div class="progress-bar progress" role="progressbar"
+																		aria-valuenow="85" aria-valuemin="0"
+																		aria-valuemax="100"></div>
+																</div> -->
+																<div
+																	class="qt-L0 progressbar-xs progress ng-isolate-scope">
+																	<div class="progress-bar"
+																		ng-class="type &amp;&amp; 'progress-bar-' + type"></div>
+																</div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="col-lg-12">
+											<div class="row">
+												<table class="table" style="border: 0; height: 20%;"
+													rowspan="2" colspan="2">
+													<tbody>
+														<tr>
+															<td class="cp-R0 imgCol1" data-href='0|R' data-img='R0'
+																data-pos='1' data-info='Right Thumb' capture><a
+																href="javascript:;" class="shortcuts shortcut"> <img
+																	src="images/enroll/noImage_1.png">
+															</a></td>
+															<td class="cp-R1 imgCol1" data-href='1|R' data-img='R1'
+																data-pos='2' data-info='Right Index' capture><a
+																href="javascript:;" class="shortcuts shortcut"> <img
+																	src="images/enroll/noImage_1.png">
+															</a></td>
+															<td class="cp-R2 imgCol1" data-href='2|R' data-img='R2'
+																data-pos='3' data-info='Right Middle' capture><a
+																href="javascript:;" class="shortcuts shortcut"> <img
+																	src="images/enroll/noImage_1.png">
+															</a></td>
+															<td class="cp-R3 imgCol1" data-href='3|R' data-img='R3'
+																data-pos='4' data-info='Right Ring' capture><a
+																href="javascript:;" class="shortcuts shortcut"> <img
+																	src="images/enroll/noImage_1.png">
+															</a></td>
+															<td class="cp-R4 imgCol1" data-href='4|R' data-img='R4'
+																data-pos='5' data-info='Right Little' capture><a
+																href="javascript:;" class="shortcuts shortcut"> <img
+																	src="images/enroll/noImage_1.png">
+															</a></td>
+														</tr>
+														<tr>
+															<td>
+																<div
+																	class="qt-R0 progressbar-xs progress ng-isolate-scope">
+																	<div class="progress-bar"
+																		ng-class="type &amp;&amp; 'progress-bar-' + type"></div>
+																</div>
+															</td>
+															<td>
+																<div
+																	class="qt-R1 progressbar-xs progress ng-isolate-scope">
+																	<div class="progress-bar"
+																		ng-class="type &amp;&amp; 'progress-bar-' + type"></div>
+																</div>
+															</td>
+															<td>
+																<div
+																	class="qt-R2 progressbar-xs progress ng-isolate-scope">
+																	<div class="progress-bar"
+																		ng-class="type &amp;&amp; 'progress-bar-' + type"></div>
+																</div>
+															</td>
+															<td>
+																<div
+																	class="qt-R3 progressbar-xs progress ng-isolate-scope">
+																	<div class="progress-bar"
+																		ng-class="type &amp;&amp; 'progress-bar-' + type"></div>
+																</div>
+															</td>
+															<td>
+																<div
+																	class="qt-R4 progressbar-xs progress ng-isolate-scope">
+																	<div class="progress-bar"
+																		ng-class="type &amp;&amp; 'progress-bar-' + type"></div>
+																</div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-12" style="text-align: center">
+										<a id="rd" class="btn btn-success" ng-click="onEnroll()">
+											<i class="icon-ok"></i> Enroll
+										</a> <a class="btn btn-warning" ng-click="resetDevice()" id="rdb"><i
+											class="icon-refresh"></i> Reset-Device </a> <a id="rd"
+											class="btn btn-danger growl-type" ng-click="cancelUserEnr()">
+											<i class="icon-warning-sign"></i> Cancel
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</form>
+</div>

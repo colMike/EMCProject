@@ -1,0 +1,251 @@
+<div class="page" ng-controller="invoiceCtrl">
+	<form role="form" class="formFadeIn" ng-hide="invoiceEditMode == true ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span> Invoices List</strong>
+				
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing
+							{{filteredInvoices.length}}/{{invoices.length}} entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+						<th>
+							<div class="th">
+								# <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('count') "
+									data-ng-class="{active: row == 'count'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-count') "
+									data-ng-class="{active: row == '-count'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Application No<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('appNo') "
+									data-ng-class="{active: row == 'appNo'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-appNo') "
+									data-ng-class="{active: row == '-appNo'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Business No<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('businessNo') "
+									data-ng-class="{active: row == 'businessNo'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-businessNo') "
+									data-ng-class="{active: row == '-businessNo'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Business Name <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('businessName') "
+									data-ng-class="{active: row == 'businessName'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-businessName') "
+									data-ng-class="{active: row == '-businessName'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Date Of Application <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('appliedOn') "
+									data-ng-class="{active: row == 'appliedOn'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-appliedOn') "
+									data-ng-class="{active: row == '-appliedOn'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Invoice Status<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('status') "
+									data-ng-class="{active: row == 'status'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-status') "
+									data-ng-class="{active: row == '-status'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Payment Status <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('paidStatus') "
+									data-ng-class="{active: row == 'paidStatus'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-paidStatus') "
+									data-ng-class="{active: row == '-paidStatus'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Amount <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('permitFee') "
+									data-ng-class="{active: row == 'permitFee'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-permitFee') "
+									data-ng-class="{active: row == '-permitFee'}"></span>
+							</div>
+						</th>
+
+					
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="invoice in currentPageInvoices">
+						<td>{{invoice.count}}</td>
+						<td>{{invoice.appNo}}</td>
+						<td>{{invoice.businessNo}}</td>
+						<td>{{invoice.businessName}}</td>
+						<td>{{invoice.appliedOn}}</td>
+						<td>{{invoice.status}}</td>
+						<td>{{invoice.paidStatus}}</td>
+						<td>{{invoice.permitFee}}</td>
+						
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredInvoices.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="!invoiceEditMode">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th input-sm"></span>
+					Basic Details</strong>
+			</div>
+
+			<div class="panel-body">
+
+				<div class="row" style="">
+					<div class="col-md-4 col-sm-4">
+						<h1 class="invoice-title">invoice</h1>
+					</div>
+					<div class="col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4">
+						<img class="inv-logo"
+							src="https://192.168.13.14/county_sbp/images/arms-small.png"
+							alt="">
+						<p>
+							VIHIGA COUNTY<br>Sub-County<br> P.O BOX 200-344, County
+							HQ
+						</p>
+					</div>
+				</div>
+				<div>
+					<div class="row">
+						<div class="col-md-5 col-sm-5">
+							<h4 class="inv-to">Invoice To</h4>
+							<h2 class="corporate-id">{{businessName}}</h2>
+							<p>
+								{{postalAdd}}<br> <br> Phone: {{mobileNo}}<br>
+								Email : {{email}}
+							</p>
+
+						</div>
+						<div class="col-md-4 col-md-offset-3 col-sm-4 col-sm-offset-3">
+							<div class="inv-col">
+								<span>Invoice#</span>{{appNo}}
+							</div>
+							<div class="inv-col">
+								<span>Invoice Date :</span>{{invoicedate | date:'dd MMM yyyy'}}
+							</div>
+							<h1 class="t-due">TOTAL DUE</h1>
+							<h2 class="amnt-value">Ksh {{permitFee}}</h2>
+						</div>
+					</div>
+				</div>
+				<table
+					class="table table-bordered table-striped table-responsive input-sm">
+					<thead>
+						<tr>
+							<th>
+								<div class="th">#</div>
+							</th>
+							<th>
+								<div class="th">Item Description</div>
+							</th>
+							<th>
+								<div class="th">Unit Cost</div>
+							</th>
+							<th>
+								<div class="th">Total</div>
+							</th>
+
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td>Fee Business fee as per the business type.</td>
+							<td>{{permitFee}}</td>
+							<td>{{permitFee}}</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>Penalty(s) Penalty charged for defaulting</td>
+							<td>{{penalty}}</td>
+							<td>{{penalty}}</td>
+						</tr>
+						<tr style="height: 100px">
+							<td colspan="2"></td>
+							<td>Total</td>
+							<td>{{total}}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+
+						<button type="button" class="btn btn-info input-sm"
+							style="width: 120px" ng-click="next()">
+							<span class="glyphicon glyphicon-arrow-right"> Next </span>
+						</button>
+						<button type="button" class="btn btn-warning input-sm"
+							style="width: 100px" ng-click="cancelNewApp()">
+							<span class="glyphicon glyphicon-remove"> Cancel </span>
+						</button>
+					</div>
+
+
+				</div>
+			</div>
+		</section>
+
+	</form>
+</div>

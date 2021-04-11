@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cache="http://www.springframework.org/schema/cache" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+    http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<!-- <cache:annotation-driven /> -->
+	<context:component-scan base-package="com.compulynx.erevenue.bal.impl"></context:component-scan>
+	<jee:jndi-lookup id="dataSource" jndi-name="/jdbc/erevenueDS"
+		resource-ref="true" />
+	<!-- Login Bean Dal -->
+	<bean id="loginDal" class="com.compulynx.erevenue.dal.impl.LoginDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+
+	<!--User Bean Dal -->
+	<bean id="userDal" class="com.compulynx.erevenue.dal.impl.UserDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+
+	<!-- UserGroup Bean Dal -->
+	<bean id="userGroupDal" class="com.compulynx.erevenue.dal.impl.UserGroupDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+
+	<!-- Sub-County Bean Dal -->
+	<bean id="subCountyDal" class="com.compulynx.erevenue.dal.impl.SubCountyDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+
+	<!-- Ward Bean Dal -->
+	<bean id="wardDal" class="com.compulynx.erevenue.dal.impl.WardDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+
+	<!-- Market Bean Dal -->
+	<bean id="marketDal" class="com.compulynx.erevenue.dal.impl.MarketDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+
+	<!-- Sub-Market Bean Dal -->
+	<bean id="subMarketDal" class="com.compulynx.erevenue.dal.impl.SubMarketDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+
+	<!-- Permit Type Bean Dal -->
+	<bean id="permitTypeDal" class="com.compulynx.erevenue.dal.impl.PermitTypeDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+	
+	<!-- Application Bean Dal -->
+	<bean id="applicationDal" class="com.compulynx.erevenue.dal.impl.ApplicationDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+	
+
+	<!-- Landrate Bean Dal -->
+	<bean id="landrateDal" class="com.compulynx.erevenue.dal.impl.LandRateDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+	
+
+	<!-- Service Bean Dal -->
+	<bean id="serviceDal" class="com.compulynx.erevenue.dal.impl.ServiceDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+
+	
+	<!-- Report Bean Dal -->
+	<bean id="reportsDal" class="com.compulynx.erevenue.dal.impl.ReportsDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+	
+    <!-- Device Bean Dal -->
+	<bean id="deviceDal" class="com.compulynx.erevenue.dal.impl.DeviceDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+
+<!-- Dash Board Bean Dal -->
+	<bean id="dashBoardDal" class="com.compulynx.erevenue.dal.impl.DashBoardDalImpl">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+</beans>
+

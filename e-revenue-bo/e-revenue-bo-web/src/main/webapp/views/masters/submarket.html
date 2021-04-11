@@ -1,0 +1,250 @@
+<div class="page" ng-controller="submarketCtrl">
+	<form role="form" class="formFadeIn"
+		ng-hide="submarketEditMode == true ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>
+					Sub-Market's List</strong>
+				<button type="button" class="btn btn-primary pull-right"
+					tooltip-placement="left" tooltip="Create New Sub-Market"
+					style="margin-top: -3px; height: 25px; margin-right: -8px; width: 60px"
+					ng-click="addSubMarket()">
+					<span class="glyphicon glyphicon-plus" style="top: -2px"></span>
+				</button>
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing
+							{{filteredSubMarkets.length}}/{{submarkets.length}} entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+						<th>
+							<div class="th">
+								# <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('count') "
+									data-ng-class="{active: row == 'count'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-count') "
+									data-ng-class="{active: row == '-count'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Sub-Market Code <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('subMarketCode') "
+									data-ng-class="{active: row == 'subMarketCode'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-marketCode') "
+									data-ng-class="{active: row == '-subMarketCode'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Sub-Market Name <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('subMarketName') "
+									data-ng-class="{active: row == 'subMarketName'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-subMarketName') "
+									data-ng-class="{active: row == '-subMarketName'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Market Name <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('marketName') "
+									data-ng-class="{active: row == 'marketName'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-marketName') "
+									data-ng-class="{active: row == '-marketName'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Status<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('status') "
+									data-ng-class="{active: row == 'status'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-status') "
+									data-ng-class="{active: row == '-status'}"></span>
+							</div>
+						</th>
+						
+						<th style="width: 60px"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="submarket in currentPageSubMarkets">
+						<td>{{submarket.count}}</td>
+						<td>{{submarket.subMarketCode}}</td>
+						<td>{{submarket.subMarketName}}</td>
+						<td>{{submarket.marketName}}</td>
+						<td>{{submarket.status}}</td>
+						<td style="padding: 1px;">
+							<button type="button" class="btn btn-success"
+								style="height: 25px; width: 60px;" tooltip-placement="top"
+								tooltip="Modify {{submarket.subMarketName}}"
+								ng-click="editSubMarket(submarket)">
+								<span class="glyphicon glyphicon-pencil" style="top: -2px;"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredSubMarkets.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="!submarketEditMode">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span> Sub-Market
+					Creation</strong>
+			</div>
+			<div class="panel-body">
+				<div class="form-inline ">
+					<div class="form-group col-sm-12 noPadding"
+						style="padding-top: 10px">
+						<div class="col-sm-6 noPadding">
+							<div class="col-sm-5" style="text-align: right;">
+								<label for="marketSelect" class="control-label input-sm">Market</label>
+							</div>
+							<div class="col-sm-7 noPadding">
+								<select style="width: 100%" ui-select2="" ng-model="marketSelect"
+									id="marketSelect">
+									<option data-ng-repeat="market in markets"
+										ng-selected="{{market.marketId}}" value="{{market.marketId}}">{{market.marketName}}</option>
+								</select>
+
+							</div>
+						</div>
+						<div class="col-sm-6 noPadding">
+							<div class="col-sm-5" style="text-align: right;">
+								<label for="active" class="control-label input-sm">Active</label>
+							</div>
+							<div class="col-sm-7 noPadding">
+								<label> <input type="checkbox" id="active"
+									ng-model="active" style="margin-top: 10px">
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group col-sm-12 noPadding" ng-hide="subMarketId==0"
+						style="padding-top: 10px">
+						<div class="col-sm-6 noPadding">
+							<div class="col-sm-5" style="text-align: right;">
+								<label for=subMarketCode " class="control-label input-sm">Sub-Market
+									Code</label>
+							</div>
+							<div class="col-sm-7 noPadding">
+								<input type="text" class="form-control input-sm"
+									style="width: 100%" id="subMarketCode" placeholder="Code"
+									ng-model="subMarketCode" ng-disabled="isExisting">
+							</div>
+						</div>
+						<div class="col-sm-6 noPadding">
+							<div class="col-sm-5" style="text-align: right;">
+								<label for="subMarketName" class="control-label input-sm">sub-Market
+									Name</label>
+							</div>
+							<div class="col-sm-7 noPadding">
+								<input type="text" class="form-control input-sm"
+									style="width: 100%" id="subMarketName" placeholder="Name"
+									ng-model="subMarketName">
+							</div>
+						</div>
+					</div>
+					<div class="form-group col-sm-12 noPadding" ng-show="subMarketId==0"
+						style="padding-top: 10px; padding-left: 20px;">
+						<div class="col-sm-12 noPadding" style="">
+							<section class="panel panel-default">
+								<div class="panel-heading input-sm">
+									<strong><span class="glyphicon glyphicon-th"></span>
+										Sub-Market Details</strong>
+									<button type="button" class="btn btn-primary pull-right"
+										tooltip-placement="left" tooltip="Create New Ward"
+										style="margin-top: -3px; height: 25px; margin-right: -8px; width: 60px"
+										ng-click="addElement()">
+										<span class="glyphicon glyphicon-plus" style="top: -2px"></span>
+									</button>
+								</div>
+								<div class="panel-body">
+									<div ng-repeat="detail in submarketDetails">
+										<div class="col-sm-6 " style="padding-top: 5px">
+											<div class="col-sm-4" style="text-align: right;">
+												<label for=subMarketCode " class="control-label input-sm">
+													Sub-Market Code</label>
+											</div>
+											<div class="col-sm-8 noPadding">
+												<input type="text" class="form-control input-sm"
+													style="width: 100%" id="detail.subMarketCode" maxlength="4"
+													placeholder="Code" ng-model="detail.subMarketCode"
+													ng-disabled="isExisting">
+											</div>
+										</div>
+										<div class="col-sm-6 noPadding" style="padding-top: 5px">
+											<div class="col-sm-4" style="text-align: right;">
+												<label for="locationName" class="control-label input-sm">
+													Sub-Market Name</label>
+											</div>
+											<div class="col-sm-8 noPadding"">
+												<input type="text" class="form-control input-sm"
+													style="width: 100%" id="detail.subMarketName"
+													placeholder="Name" ng-model="detail.subMarketName">
+											</div>
+										</div>
+									</div>
+								</div>
+							</section>
+						</div>
+					</div>
+
+					<div class="form-group col-sm-12 noPadding"
+						style="padding-top: 10px">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="button" class="btn btn-success input-sm"
+								style="width: 100px" ng-click="updSubMarket()">
+								<span class="glyphicon glyphicon-ok">Save</span>
+							</button>
+							<button type="button" class="btn btn-warning input-sm"
+								style="width: 100px" ng-click="cancelSubMarket()">
+								<span class="glyphicon glyphicon-remove"> Cancel</span>
+							</button>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</form>
+</div>

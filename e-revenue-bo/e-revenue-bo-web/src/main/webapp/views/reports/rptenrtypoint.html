@@ -1,0 +1,107 @@
+<div class="page" ng-controller="deviceCtrl">
+	<form role="form" class="formFadeIn" ng-hide="deviceEditMode == true ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>
+					Device's List</strong>
+				<button type="button" class="btn btn-primary pull-right"
+					tooltip-placement="left" tooltip="Create New Device"
+					style="margin-top: -3px; height: 25px; margin-right: -8px; width: 60px"
+					ng-click="addDevice()">
+					<span class="glyphicon glyphicon-plus" style="top: -2px"></span>
+				</button>
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing {{filteredDevices.length}}/{{device.length}}
+							entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+						<th>
+							<div class="th">
+								# <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('regId') "
+									data-ng-class="{active: row == 'regId'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-regId') "
+									data-ng-class="{active: row == '-regId'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Serial No <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('serialNo') "
+									data-ng-class="{active: row == 'serialNo'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-serialNo') "
+									data-ng-class="{active: row == '-serialNo'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Status <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('active') "
+									data-ng-class="{active: row == 'active'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-active') "
+									data-ng-class="{active: row == '-active'}"></span>
+							</div>
+						</th>
+
+
+
+						<th style="width: 60px"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="device in currentPageDevices">
+					
+						<td>{{device.regId}}</td>
+						<td>{{device.serialNo}}</td>
+						<td><i class="glyphicon glyphicon-record" ng-style="{color: (device.active==true) ? 'red' : 'green'}"></i></td>
+						<td style="padding: 1px;">
+							<button type="button" class="btn btn-success"
+								style="height: 25px; width: 60px;" tooltip-placement="top"
+								tooltip="Modify {{device.serialNo}"
+								ng-click="editDevice(device)">
+								<span class="glyphicon glyphicon-pencil" style="top: -2px;"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredDevices.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	</div>

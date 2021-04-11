@@ -1,0 +1,225 @@
+
+<div class="page" ng-controller="modifyServiceCtrl">
+	<form class="formFadeIn" role="form">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span> Select
+					Service Type </strong>
+			</div>
+			<div class="panel-body">
+
+				<div class="form-inline col-sm-12 noPadding">
+					<div class="form-group col-sm-6 noPadding"
+						style="padding-right: 1px" ng-hide="brokerSelectMode==true">
+						<label for="typeSelect" class="col-sm-3 control-label input-sm"
+							style="text-align: right;">Select Service Type</label>
+
+						<div class="col-sm-9 noPadding">
+							<select style="width: 100%" ui-select2="typeSelect"
+								ng-model="typeSelect" id="typeSelect">
+								<option data-ng-repeat="type in serTypes"
+									value="{{type.typeId}}">{{type.typeName}}</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6 noPadding" ng-hide="showMarkets"
+						style="padding-right: 1px">
+						<label for="marketSelect" class="col-sm-3 control-label input-sm"
+							style="text-align: right;">Select Market</label>
+
+						<div class="col-sm-9 noPadding">
+							<select style="width: 100%" ui-select2="" ng-model="marketSelect"
+								id="marketSelect">
+								<option data-ng-repeat="market in markets"
+									ng-selected="{{market.marketId}}" value="{{market.marketId}}">{{market.marketName}}</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</form>
+	<form role="form" class="formFadeIn" ng-hide="showParentService">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>
+					Service's List</strong>
+
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing
+							{{filteredParentServices.length}}/{{pService.length}} entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+						<th>
+							<div class="th">
+								# <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('count') "
+									data-ng-class="{active: row == 'count'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-count') "
+									data-ng-class="{active: row == '-count'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								service Name <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('serviceName') "
+									data-ng-class="{active: row == 'serviceName'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-serviceName') "
+									data-ng-class="{active: row == '-serviceName'}"></span>
+							</div>
+						</th>
+						<th ng-hide="typeSelect==1 || typeSelect==2">
+							<div class="th">
+								Service Value <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('serviceValue') "
+									data-ng-class="{active: row == 'serviceValue'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-serviceValue') "
+									data-ng-class="{active: row == '-serviceValue'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Service Status <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('active2') "
+									data-ng-class="{active: row == 'active2'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-active2') "
+									data-ng-class="{active: row == '-active2'}"></span>
+							</div>
+						</th>
+						<th style="width: 60px"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="service in currentParentServices">
+						<td>{{service.count}}</td>
+						<td ng-hide="true">{{service.serviceId}}</td>
+						<td><input type="text" class="form-control input-sm"
+							ng-disabled="service.isDisabled" style="width: 100%;"
+							id="inpServiceName" placeholder="Name"
+							ng-model="service.serviceName"></td>
+						<td ng-hide="typeSelect==1 || typeSelect==2"><input
+							type="number" class="form-control input-sm" style="width: 100%;"
+							id="inpServiceValue" placeholder="Value"
+							ng-disabled="service.isDisabled" ng-model="service.serviceValue"></td>
+						<td><label> <input type="checkbox" id="active"
+								ng-disabled="service.isDisabled" ng-model="service.active"
+								style="margin-top: 10px">
+						</label>{{service.active2}}</td>
+						<td style="padding: 1px;">
+							<button type="button" class="btn btn-success"
+								style="height: 25px; width: 60px;" tooltip-placement="top"
+								tooltip="Modify {{service.serviceName}}"
+								ng-click="modifyService(service)">
+								<span ng-class="service.iconStyle" style="top: -2px;"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredParentServices.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+			<div class="panel-body">
+				<div class="form-inline ">
+					<div class="form-group col-sm-12 noPadding">
+						<button type="button" class="btn btn-success input-sm"
+							style="width: 100px" ng-click="updSer()">
+							<span class="glyphicon glyphicon-ok"> Save </span>
+						</button>
+						<button type="button" class="btn btn-warning input-sm"
+							style="width: 100px" ng-click="cancelSer()">
+							<span class="glyphicon glyphicon-remove"> Cancel </span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</section>
+	</form>
+
+	<form class="formFadeIn" role="form" ng-hide="serEditMode">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>Modify
+					Service </strong>
+			</div>
+			<div class="panel-body">
+				<div class="form-inline ">
+					<div class="form-group col-sm-12 noPadding">
+
+						<div class="form-group col-sm-6 noPadding">
+							<label for="inpAgentDesc" class="col-sm-2 control-label input-sm">Name</label>
+
+							<div class="col-sm-10">
+								<input type="text" class="form-control input-sm"
+									style="width: 100%;" id="inpServiceName" placeholder="Name"
+									ng-model="serviceName">
+							</div>
+						</div>
+						<!--list of servies  -->
+						<div class="form-group col-sm-6 noPadding">
+							<label for="inpActive" class="col-sm-2 control-label input-sm">Active</label>
+
+							<div class="col-sm-10">
+								<label> <input type="checkbox" id="active"
+									ng-model="active" style="margin-top: 10px">
+								</label>
+							</div>
+						</div>
+
+					</div>
+
+
+				</div>
+				<!-- Grids -->
+
+				<div class="form-group col-sm-12 noPadding">
+					<button type="button" class="btn btn-success input-sm"
+						style="width: 100px" ng-click="updSer()">
+						<span class="glyphicon glyphicon-ok"> Save </span>
+					</button>
+					<button type="button" class="btn btn-warning input-sm"
+						style="width: 100px" ng-click="cancelSer()">
+						<span class="glyphicon glyphicon-remove"> Cancel </span>
+					</button>
+				</div>
+			</div>
+		</section>
+	</form>
+</div>

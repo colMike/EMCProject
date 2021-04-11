@@ -1,0 +1,138 @@
+<form class="form-horizontal formFadeIn" role="form"
+	ng-hide="!userEditMode">
+	<section class="panel panel-default">
+		<div class="panel-heading input-sm">
+			<strong><span class="glyphicon glyphicon-th"></span> Permit
+				Renewal </strong>
+		</div>
+		<div class="panel-body">
+			<div class="form-group">
+				<label for="userName" class="col-sm-2 control-label input-sm">User
+					Name</label>
+
+				<div class="col-sm-10">
+					<input type="text"
+						typeahead="app for app in businessList | filter:$viewValue | limitTo:8"
+						class="form-control input-sm" placeholder="Business No"
+						 style="width: 100%" ng-Model="app.businessNo">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="userFullName" class="col-sm-2 control-label input-sm">Full
+					Name</label>
+
+				<div class="col-sm-10">
+					<input type="text" class="form-control input-sm" id="userFullName"
+						placeholder="Full Name" ng-model="userFullName">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="userNationalId" class="col-sm-2 control-label input-sm">National
+					Id</label>
+
+				<div class="col-sm-10">
+					<input type="text" class="form-control input-sm" id=""
+						placeholder="National Id" ng-model="userNationalId">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="userPwd" class="col-sm-2 control-label input-sm">Password</label>
+
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id="userPwd"
+						placeholder="Password" ng-model="userPwd">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="confirmPwd" class="col-sm-2 control-label input-sm">Confirm
+					Password</label>
+
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id="confirmPwd"
+						placeholder="Confirm Password" ng-model="confirmPwd">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="groupSelect" class="col-sm-2 control-label input-sm"
+					style="text-align: right;">Select Group</label>
+
+				<div class="col-sm-10">
+					<select style="width: 100%" ui-select2="" ng-model="groupSelect"
+						id="groupSelect">
+						<option data-ng-repeat="group in userGroups"
+							ng-selected="{{group.groupId}}" value="{{group.groupId}}">{{group.groupName}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="groupSelect" class="col-sm-2 control-label input-sm"
+					style="text-align: right;">Select UserType</label>
+
+				<div class="col-sm-10">
+					<select style="width: 100%" ui-select2="" ng-model="userTypeSelect"
+						id="userTypeSelect">
+						<option data-ng-repeat="userType in userTypes"
+							ng-selected="{{userType.userTypeId}}"
+							value="{{userType.userTypeId}}">{{userType.userTypeName}}</option>
+					</select>
+
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="userEmail" class="col-sm-2 control-label input-sm">Email</label>
+
+				<div class="col-sm-10">
+					<input type="email" class="form-control input-sm" id="userEmail"
+						placeholder="Email" ng-model="userEmail">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="userPhone" class="col-sm-2 control-label input-sm">Phone</label>
+
+				<div class="col-sm-10">
+					<input type="text" class="form-control input-sm" id="userPhone"
+						placeholder="Phone" ng-model="userPhone">
+				</div>
+			</div>
+
+			<div class="form-group" ng-hide="showMarkets">
+				<label for="marketSelect" class="col-sm-2 control-label input-sm"
+					style="text-align: right;">Select Market</label>
+
+				<div class="col-sm-10">
+					<select style="width: 100%" ui-select2="" ng-model="marketSelect"
+						id="marketSelect">
+						<option data-ng-repeat="market in markets"
+							ng-selected="{{market.marketId}}" value="{{market.marketId}}">{{market.marketName}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="active" class="col-sm-2 control-label input-sm">Active</label>
+
+				<div class="col-sm-10">
+					<label> <input type="checkbox" id="active"
+						ng-model="active" style="margin-top: 10px">
+					</label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="button" class="btn btn-success input-sm"
+						style="width: 100px" ng-click="updUser()">
+						<span class="glyphicon glyphicon-ok">Save</span>
+					</button>
+					<button type="button" class="btn btn-warning input-sm"
+						style="width: 100px" ng-click="cancelUser()">
+						<span class="glyphicon glyphicon-remove"> Cancel</span>
+					</button>
+
+				</div>
+			</div>
+		</div>
+	</section>
+</form>

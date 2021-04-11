@@ -1,0 +1,370 @@
+<div class="page" ng-controller="registrationCtrl">
+	<form role="form" class="formFadeIn" ng-hide="regEditMode == true">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>Registration's
+					List</strong>
+				<button type="button" class="btn btn-primary pull-right"
+					tooltip-placement="left" tooltip="Create New Registration Form"
+					style="margin-top: -3px; height: 25px; margin-right: -8px; width: 60px"
+					ng-click="addRegistration()">
+					<span class="glyphicon glyphicon-plus" style="top: -2px"></span>
+				</button>
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing
+							{{filteredRegisters.length}}/{{registers.length}} entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+						<th>
+							<div class="th">
+								# <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('count') "
+									data-ng-class="{active: row == 'count'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-count') "
+									data-ng-class="{active: row == '-count'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Plot Number<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('plotNumber') "
+									data-ng-class="{active: row == 'plotNumber'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-plotNumber') "
+									data-ng-class="{active: row == '-plotNumber'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Title Deed Number <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('titleDeedNumber') "
+									data-ng-class="{active: row == 'titleDeedNumber'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-titleDeedNumber') "
+									data-ng-class="{active: row == '-titleDeedNumber'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Name <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('name') "
+									data-ng-class="{active: row == 'name'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-name') "
+									data-ng-class="{active: row == '-name'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Acreage <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('acreage') "
+									data-ng-class="{active: row == 'acreage'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-acreage') "
+									data-ng-class="{active: row == '-acreage'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Status <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('status') "
+									data-ng-class="{active: row == 'status'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-status') "
+									data-ng-class="{active: row == '-status'}"></span>
+							</div>
+						</th>
+
+						<th style="width: 60px"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="reg in currentPageRegisters">
+						<td>{{reg.count}}</td>
+						<td>{{reg.plotNumber}}</td>
+						<td>{{reg.titleDeedNumber}}</td>
+						<td>{{reg.name}}</td>
+						<td>{{reg.acreage}}</td>
+						<td>{{reg.status}}</td>
+						<td style="padding: 1px;">
+							<button type="button" class="btn btn-success"
+								style="height: 25px; width: 60px;" tooltip-placement="top"
+								tooltip="Modify {{reg.plotNumber}}"
+								ng-click="editRegistration(reg)">
+								<span class="glyphicon glyphicon-pencil" style="top: -2px;"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredRegisters.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="!regEditMode">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th input-sm"></span>
+					Land Details</strong>
+			</div>
+
+			<div class="panel-body">
+
+				<div class="form-group">
+					<label for="plotNumber" class="col-sm-2 control-label input-sm">Plot
+						Number</label>
+
+					<div class="col-sm-8">
+						<input type="text" class="form-control input-sm" id="plotNumber"
+							placeholder="Plot Number" ng-model="plotNumber">
+					</div>
+
+
+				</div>
+
+				<div class="form-group">
+
+					<label for="mapSheetNumber" class="col-sm-2 control-label input-sm">MapSheet
+						Number</label>
+
+					<div class="col-sm-8">
+						<input type="text" class="form-control input-sm"
+							id="mapSheetNumber" placeholder="MapSheet Number"
+							ng-model="mapSheetNumber">
+					</div>
+				</div>
+
+				<div class="form-group">
+
+					<label for="location" class="col-sm-2 control-label input-sm">Location</label>
+
+					<div class="col-sm-8">
+						<input type="location" class="form-control input-sm" id="Farm Name"
+							placeholder="Location" ng-model="location">
+					</div>
+				</div>
+				
+					<div class="form-group">
+
+					<label for="location" class="col-sm-2 control-label input-sm">Sub-location</label>
+
+					<div class="col-sm-8">
+						<input type="text" class="form-control input-sm" id="sublocation"
+							placeholder="Sublocation" ng-model="sublocation">
+					</div>
+				</div>
+			
+				<div class="form-group">
+					<label for="permitTypeSelect"
+						class="col-sm-2 control-label input-sm">Land Type </label>
+
+					<div class="col-sm-8">
+						<select style="width: 100%" ui-select2=""
+							ng-model="permitTypeSelect" id="permitTypeSelect">
+							<option data-ng-repeat="permitType in permitTypes"
+								ng-selected="{{permitType.permitTypeId}}"
+								value="{{permitType.permitTypeId}}">{{permitType.permitTypeName}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group" ng-show="permitTypeSelect!=14">
+					<label for="acreage" class="col-sm-2 control-label input-sm">Acreage
+					</label>
+
+					<div class="col-sm-8">
+						<input type="number" class="form-control input-sm" id="acreage"
+							placeholder="Acreage" ng-model="acreage">
+					</div>
+				</div>
+				<div class="form-group" ng-hide="true">
+					<label for="acreage" class="col-sm-2 control-label input-sm">Amount
+					</label>
+
+					<div class="col-sm-8">
+						<input type="number" class="form-control input-sm" id="acreage"
+							placeholder="Amount Paid" ng-model="amount">
+					</div>
+				</div>
+				<div class="form-group" ng-hide="true">
+					<label for="acreage" class="col-sm-2 control-label input-sm">Balance
+					</label>
+
+					<div class="col-sm-8">
+						<input type="number" class="form-control input-sm" id="acreage" ng-disabled="true"
+							placeholder="Balance" ng-model="balance">
+					</div>
+				</div>
+				<div class="form-group">
+
+					<label for="titleDeedNumber"
+						class="col-sm-2 control-label input-sm">Title Deed Number</label>
+
+					<div class="col-sm-8">
+						<input type="text" class="form-control input-sm"
+							id="titleDeedNumber" placeholder="Title Deed Number"
+							ng-model="titleDeedNumber">
+
+					</div>
+				</div>
+
+
+			</div>
+
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th input-sm"></span>
+					Owner Details</strong>
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label for="name" class="col-sm-2 control-label input-sm">
+						Name</label>
+
+					<div class="col-sm-8">
+						<input type="text" class="form-control input-sm" id="name"
+							placeholder="name" ng-model="name">
+					</div>
+				</div>
+				<div class="form-group">
+
+					<label for="krapin" class="col-sm-2 control-label input-sm">KRA
+						PIN </label>
+
+					<div class="col-sm-8">
+						<input type="text" class="form-control input-sm" id="krapin"
+							placeholder="krapin" ng-model="krapin">
+					</div>
+				</div>
+
+				<div class="form-group">
+
+					<label for="nationalIdNumber"
+						class="col-sm-2 control-label input-sm">National ID Number
+					</label>
+
+					<div class="col-sm-8">
+						<input type="text" class="form-control input-sm"
+							id="nationalIdNumber" placeholder="nationalIdNumber"
+							ng-model="nationalIdNumber">
+					</div>
+				</div>
+					<div class="form-group">
+
+					<label for="nationalIdNumber"
+						class="col-sm-2 control-label input-sm">Phone Number
+					</label>
+
+					<div class="col-sm-8">
+						<input type="text" class="form-control input-sm"
+							id="phone" placeholder="phone"
+							ng-model="phone">
+					</div>
+				</div>
+						<div class="form-group">
+
+					<label for="location" class="col-sm-2 control-label input-sm">Address</label>
+
+					<div class="col-sm-8">
+						<input type="text" class="form-control input-sm" id="address"
+							placeholder="Address" ng-model="address">
+					</div>
+				</div>
+							<div class="form-group">
+
+					<label for="location" class="col-sm-2 control-label input-sm">Postal Code</label>
+
+					<div class="col-sm-8">
+						<input type="text" class="form-control input-sm" id="address"
+							placeholder="Address" ng-model="code">
+					</div>
+				</div>
+			</div>
+			<div class="panel-heading input-sm">
+
+				<strong><span class="glyphicon glyphicon-th input-sm"></span>
+					Land Location Details</strong>
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label for="sub county" class="col-sm-2 control-label input-sm">
+						Sub County</label>
+
+					<div class="col-sm-8">
+						<select style="width: 100%" ui-select2=""
+							ng-model="subCountySelect" id="subCountySelect">
+							<option data-ng-repeat="subCounty in subCounties"
+								ng-selected="{{subCounty.subCountyId}}"
+								value="{{subCounty.subCountyId}}">{{subCounty.subCountyName}}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="ward" class="col-sm-2 control-label input-sm">
+						Ward</label>
+
+					<div class="col-sm-8">
+						<select style="width: 100%" ui-select2="" ng-model="wardSelect"
+							id="wardSelect">
+							<option data-ng-repeat="ward in wards"
+								ng-selected="{{ward.wardId}}" value="{{ward.wardId}}">{{ward.wardName}}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-8">
+
+
+					<button type="button" class="btn btn-success input-sm"
+						style="width: 120px" ng-click="updNewReg()">
+						<span class="glyphicon glyphicon-arrow-right"> Save </span>
+					</button>
+					<button type="button" class="btn btn-warning input-sm"
+						style="width: 100px" ng-click="cancelNewReg()">
+						<span class="glyphicon glyphicon-remove"> Cancel </span>
+					</button>
+				</div>
+			</div>
+
+		</section>
+
+	</form>
+
+
+</div>

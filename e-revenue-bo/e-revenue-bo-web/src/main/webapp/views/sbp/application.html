@@ -1,0 +1,659 @@
+<div class="page" ng-controller="applicationCtrl">
+	<form role="form" class="formFadeIn" ng-hide="appEditMode == true ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>Permits Applications List</strong>
+				<button type="button" class="btn btn-primary pull-right"
+					tooltip-placement="left" tooltip="Create New Application"
+					style="margin-top: -3px; height: 25px; margin-right: -8px; width: 60px"
+					ng-click="addApp()">
+					<span class="glyphicon glyphicon-plus" style="top: -2px"></span>
+				</button>
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing {{filteredApps.length}}/{{apps.length}}
+							entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+						<th>
+							<div class="th">
+								# <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('count') "
+									data-ng-class="{active: row == 'count'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-count') "
+									data-ng-class="{active: row == '-count'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Business Id<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('businessId') "
+									data-ng-class="{active: row == 'businessId'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-businessId') "
+									data-ng-class="{active: row == '-businessId'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Business Name <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('businessName') "
+									data-ng-class="{active: row == 'businessName'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-businessName') "
+									data-ng-class="{active: row == '-businessName'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								No Of Employees <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('noOfEmployees') "
+									data-ng-class="{active: row == 'noOfEmployees'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-noOfEmployees') "
+									data-ng-class="{active: row == '-noOfEmployees'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Fee <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('permitFee') "
+									data-ng-class="{active: row == 'permitFee'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-permitFee') "
+									data-ng-class="{active: row == '-permitFee'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Status <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('status') "
+									data-ng-class="{active: row == 'status'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-status') "
+									data-ng-class="{active: row == '-status'}"></span>
+							</div>
+						</th>
+						<th style="width: 60px"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="app in currentPageApplications">
+						<td>{{app.count}}</td>
+						<td>{{app.businessNo}}</td>
+						<td>{{app.businessName}}</td>
+						<td>{{app.noOfEmployees}}</td>
+						<td>{{app.permitFee}}</td>
+						<td>{{app.status}}</td>
+						<td style="padding: 1px;">
+							<button type="button" class="btn btn-success"
+								style="height: 25px; width: 60px;" tooltip-placement="top"
+								tooltip="Modify {{app.businessName}}" ng-click="editApp(app)">
+								<span class="glyphicon glyphicon-pencil" style="top: -2px;"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredApplications.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="appDetailMode">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th input-sm"></span>
+					Basic Details</strong>
+
+
+			</div>
+
+			<div class="panel-body">
+
+				<div class="form-group col-sm-12 noPadding">
+
+					<div class="col-sm-12 noPadding">
+						<div class="col-sm-2" style="text-align: right;">
+							<label for="businessName" class="control-label input-sm">Business
+								Name</label>
+						</div>
+						<div class="col-sm-10">
+							<input type="text" class="form-control input-sm"
+								id="businessName" placeholder="Business Name"
+								ng-model="businessName">
+						</div>
+					</div>
+
+
+				</div>
+
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="noOfEmployees" class="control-label input-sm">PIN
+								NUMBER</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm"
+								id="pinNumber" placeholder="pin number"
+								ng-model="pinNumber">
+						</div>
+					</div>
+
+
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="vat" class="control-label input-sm">VAT
+								NUMBER</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm"
+								id="vatNumber" placeholder="vat number"
+								ng-model="vatNumber">
+						</div>
+					</div>
+					</div>
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="noOfEmployees" class="control-label input-sm">No
+								of Employees</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm"
+								id="noOfEmployees" placeholder="No of Employees"
+								ng-model="noOfEmployees">
+						</div>
+					</div>
+
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="permitTypeSelect" class="control-label input-sm">Permit
+								Type </label>
+						</div>
+						<div class="col-sm-8">
+							<select style="width: 100%" ui-select2=""
+								ng-model="permitTypeSelect" id="permitTypeSelect">
+								<option data-ng-repeat="permitType in permitTypes"
+									ng-selected="{{permitType.permitTypeId}}"
+									value="{{permitType.permitTypeId}}">{{permitType.permitTypeName}}</option>
+							</select>
+						</div>
+					</div>
+
+				</div>
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="permitTypeSelect" class="control-label input-sm">Application Fee
+								</label>
+						</div>
+						<div class="col-sm-8">
+						
+							<input type="text" class="form-control input-sm" id="appFee"
+								placeholder="Application Fee" ng-model="appFee">
+					
+						</div>
+					</div>
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="conservancy_fee" class="control-label input-sm">Conservancy Fee
+								</label>
+						</div>
+						<div class="col-sm-8">
+						
+							<input type="text" class="form-control input-sm" id="conservancy_fee"
+								placeholder="conservancy Fee" ng-model="conservancy_fee">
+					
+						</div>
+					</div>
+			</div>
+		<!-- 			<div class="form-group col-sm-12 noPadding">
+					
+			</div> -->
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="waterAccNo" class="control-label input-sm">Water
+								Conn. No</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="waterAccNo"
+								placeholder="Water Connection No" ng-model="waterAccNo">
+						</div>
+					</div>
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="electricityAccNo" class="control-label input-sm">Electricity
+								Acc. No</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm"
+								id="electricityAccNo" placeholder="Electricity Account No"
+								ng-model="electricityAccNo">
+
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group col-sm-12 noPadding">
+
+					<div class="col-sm-12 noPadding">
+						<div class="col-sm-2" style="text-align: right;">
+							<label for="regNo" class="control-label input-sm">Cert Reg No</label>
+						</div>
+						<div class="col-sm-10">
+							<input type="text" class="form-control input-sm" id="regNo"
+								placeholder="Reg No" ng-model="regNo">
+						</div>
+					</div>
+
+				</div>
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="subCountySelect" class="control-label input-sm">
+								Sub-County</label>
+						</div>
+						<div class="col-sm-8">
+							<select style="width: 100%" ui-select2="subCountySelect"
+								ng-model="subCountySelect" id="subCountySelect">
+								<option data-ng-repeat="sub in subCounties"
+									ng-selected="{{sub.subCountyId}}" value="{{sub.subCountyId}}">{{sub.subCountyName}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-sm-6 noPadding" ng-hide="showWards">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="wardSelect" class="control-label input-sm">Ward</label>
+						</div>
+						<div class="col-sm-8 ">
+							<select style="width: 100%" ui-select2="wardSelect"
+								ng-model="wardSelect" id="wardSelect">
+								<option data-ng-repeat="ward in wards"
+									ng-selected="{{ward.wardId}}" value="{{ward.wardId}}">{{ward.wardName}}</option>
+							</select>
+
+						</div>
+					</div>
+
+				</div>
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-12 noPadding" ng-hide="showMarkets">
+						<div class="col-sm-2" style="text-align: right;">
+							<label for="marketSelect" class="control-label input-sm">Market</label>
+						</div>
+						<div class="col-sm-10 ">
+							<select style="width: 100%" ui-select2="marketSelect"
+								ng-model="marketSelect" id="marketSelect">
+								<option data-ng-repeat="mar in markets"
+									ng-selected="{{mar.marketId}}" value="{{mar.marketId}}">{{mar.marketName}}</option>
+							</select>
+
+						</div>
+					</div>
+				</div>
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-12 noPadding">
+						<div class="col-sm-2" style="text-align: right;">
+							<label for="businessDesc" class="control-label input-sm">Business
+								Description</label>
+						</div>
+						<div class="col-sm-10">
+							<input type="text" class="form-control input-sm"
+								id="businessDesc" placeholder="Business Description"
+								ng-model="businessDesc">
+
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-12 noPadding">
+						<div class="col-sm-2" style="text-align: right;">
+							<label for="businessDesc" class="control-label input-sm">Detailed Activity Description
+								</label>
+						</div>
+						<div class="col-sm-10">
+							<textarea type="text" class="form-control input-sm"
+								id="detailDesc" placeholder="Detail Description"
+								ng-model="detailDesc"></textarea>
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th input-sm"></span>
+					Contact Information</strong>
+			</div>
+			<div class="panel-body">
+			<!-- 
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-12 noPadding">
+						<div class="col-sm-2" style="text-align: right;">
+							<label for="nationalId" class="control-label input-sm">Name
+							</label>
+						</div>
+						<div class="col-sm-10">
+							<input type="text" class="form-control input-sm" id="plotNo"
+								placeholder="Name" ng-model="name">
+						</div>
+					</div>
+				</div>
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-12 noPadding">
+						<div class="col-sm-2" style="text-align: right;">
+							<label for="nationalId" class="control-label input-sm">National
+								Id </label>
+						</div>
+						<div class="col-sm-10">
+							<input type="text" class="form-control input-sm" id="plotNo"
+								placeholder="National Id" ng-model="nationalId">
+						</div>
+					</div>
+				</div>
+				 -->
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="applicant" class="control-label input-sm">
+								Applicant</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="applicant"
+								placeholder="Applicant Name" ng-model="applicant">
+						</div>
+					</div>
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="nationalId" class="control-label input-sm">National ID Number</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="nationalId"
+								placeholder="National Id" ng-model="nationalId">
+						</div>
+					</div>
+				</div>
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="postalAdd" class="control-label input-sm">
+								Postal Address</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="postalAdd"
+								placeholder="Postal Address" ng-model="postalAdd">
+						</div>
+					</div>
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="postalCode" class="control-label input-sm">Postal
+								Code</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="postalCode"
+								placeholder="Postal Code" ng-model="postalCode">
+						</div>
+					</div>
+					</div>
+					<div class="form-group col-sm-12 noPadding">
+
+						<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="postalCode" class="control-label input-sm">Business physical Address
+								</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="address"
+								placeholder="Physical address" ng-model="landZone">
+						</div>
+					</div>
+
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="postalCode" class="control-label input-sm">Road
+								Street</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="road"
+								placeholder="Road/Street" ng-model="road">
+						</div>
+					</div>
+					</div>
+
+					<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="postalCode" class="control-label input-sm">Town
+								</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="town"
+								placeholder="town" ng-model="town">
+						</div>
+					</div>
+
+						<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="postalCode" class="control-label input-sm">Building
+								</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="building"
+								placeholder="building" ng-model="building">
+						</div>
+					</div>
+					</div>
+					<div class="form-group col-sm-12 noPadding">
+							<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="postalCode" class="control-label input-sm">Floor
+								</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="floor"
+								placeholder="floor" ng-model="floor">
+						</div>
+					</div>
+
+							<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="postalCode" class="control-label input-sm">Room number
+								</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="room"
+								placeholder="room number" ng-model="room">
+						</div>
+					</div>
+				</div>
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="email" class="control-label input-sm">Email </label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm"
+								id="inpMemberHomeTele" placeholder="Email" ng-model="email">
+						</div>
+					</div>
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="fax" class="control-label input-sm">Fax</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="fax"
+								placeholder="Fax" ng-model="fax">
+						</div>
+					</div>
+
+				</div>
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="mobileNo" class="control-label input-sm">
+								Mobile No.</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm"
+							 id="mobileNo"
+								placeholder="Telephone(Mobile)" ng-model="mobileNo">
+						</div>
+					</div>
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="landLineNo" class="control-label input-sm">Land-Line
+								No.</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm"
+							 id="landLineNo"
+								placeholder="Alternative Line" ng-model="landLineNo">
+						</div>
+					</div>
+
+				</div>
+
+				<div class="form-group col-sm-12 noPadding">
+					<!-- <div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="landZone" class="control-label input-sm">
+								Land Zone</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="landZone"
+								placeholder="Land Zone" ng-model="landZone">
+						</div>
+					</div> -->
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="plotNo" class="control-label input-sm">Plot
+								No.</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="form-control input-sm" id="plotNo"
+								placeholder="Plot No" ng-model="plotNo">
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+
+					<button type="button" class="btn btn-info input-sm"
+						style="width: 120px" ng-click="next()">
+						<span class="glyphicon glyphicon-arrow-right"> Next </span>
+					</button>
+					<button type="button" class="btn btn-warning input-sm"
+						style="width: 100px" ng-click="cancelNewApp()">
+						<span class="glyphicon glyphicon-remove"> Cancel </span>
+					</button>
+				</div>
+
+
+			</div>
+
+		</section>
+
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="priceDetailMode">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th input-sm"></span>Price Details & Terms And Conditions</strong>
+			</div>
+
+			<div class="panel-body">
+				<div class="form-group col-sm-12">
+					<div class="col-lg-3 col-xsm-6">
+						<div class="panel mini-box bg-facebook">
+							<span class="box-icon bg-danger"> <i class="fa fa-tag"></i>
+							</span>
+							<div class="box-info">
+								<p class="size-h2">{{permitFee}}</p>
+								<p class="text-muted">
+									<span data-i18n="KSH" style="color: white;">{{KSH}}</span>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6">
+						<div class="col-sm-1">
+							<label> <input type="checkbox" id="agree"
+								ng-model="agree" style="margin-top: 10px">
+							</label>
+
+						</div>
+						<div class="col-sm-11" style="text-align: left;">
+							<label for="businessDesc" class="control-label"
+								style="font-weight: bold;">I agree with the Terms and
+								Conditions</label>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="button" class="btn btn-info input-sm"
+						style="width: 120px" ng-click="back()">
+						<span class="glyphicon glyphicon-arrow-left"> Back </span>
+					</button>
+					<button type="button" class="btn btn-success input-sm"
+						style="width: 120px" ng-click="updNewApp()">
+						<span class="glyphicon glyphicon-arrow-right"> Save </span>
+					</button>
+					<button type="button" class="btn btn-warning input-sm"
+						style="width: 100px" ng-click="cancelNewApp()">
+						<span class="glyphicon glyphicon-remove"> Cancel </span>
+					</button>
+				</div>
+
+
+			</div>
+
+		</section>
+
+	</form>
+
+</div>

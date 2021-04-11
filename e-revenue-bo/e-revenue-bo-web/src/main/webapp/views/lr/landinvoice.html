@@ -1,0 +1,139 @@
+<div class="page" ng-controller="landapprovalCtrl">
+	<form role="form" class="formFadeIn" ng-hide="landViewMode == true ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>
+					LandInvoice's List</strong>
+
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing
+							{{filteredlandInvoices.length}}/{{landinvoices.length}} entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+						<th>
+							<div class="th">
+								# <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('count') "
+									data-ng-class="{active: row == 'count'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-count') "
+									data-ng-class="{active: row == '-count'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Reg No<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('regNo') "
+									data-ng-class="{active: row == 'regNo'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-regNo') "
+									data-ng-class="{active: row == '-regNo'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Plot Number <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('plotNumber') "
+									data-ng-class="{active: row == 'plotNumber'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-plotNumber') "
+									data-ng-class="{active: row == '-plotNumber'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Applicant <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('applicant') "
+									data-ng-class="{active: row == 'applicant'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-applicant') "
+									data-ng-class="{active: row == '-applicant'}"></span>
+							</div>
+						</th>
+
+						<th>
+							<div class="th">
+								Date Of Application <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('appliedOn') "
+									data-ng-class="{active: row == 'appliedOn'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-appliedOn') "
+									data-ng-class="{active: row == '-appliedOn'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Land Invoice Status<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('status') "
+									data-ng-class="{active: row == 'status'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-status') "
+									data-ng-class="{active: row == '-status'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Payment Status <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('paidStatus') "
+									data-ng-class="{active: row == 'paidStatus'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-paidStatus') "
+									data-ng-class="{active: row == '-paidStatus'}"></span>
+							</div>
+						</th>
+
+
+					
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="landinvoice in currentPagelandInvoices">
+						<td>{{landinvoice.count}}</td>
+						<td>{{landinvoice.regNo}}</td>
+						<td>{{landinvoice.plotNumber}}</td>
+						<td>{{landinvoice.applicant}}</td>
+						<td>{{landinvoice.appliedOn}}</td>
+						<td>{{landinvoice.status}}</td>
+						<td>{{landinvoice.paidStatus}}</td>
+						
+
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredlandInvoices.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+</div>

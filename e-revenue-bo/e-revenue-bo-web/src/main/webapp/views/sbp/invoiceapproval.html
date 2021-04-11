@@ -1,0 +1,525 @@
+<div class="page" ng-controller="invoiceapprovalCtrl">
+	<form role="form" class="formFadeIn" ng-hide="appViewMode == true ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>Invoices List</strong>
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing
+							{{filteredInvoices.length}}/{{invoices.length}} entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+						<th>
+							<div class="th">
+								# <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('count') "
+									data-ng-class="{active: row == 'count'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-count') "
+									data-ng-class="{active: row == '-count'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Application No<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('appNo') "
+									data-ng-class="{active: row == 'appNo'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-appNo') "
+									data-ng-class="{active: row == '-appNo'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Business Name <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('businessName') "
+									data-ng-class="{active: row == 'businessName'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-businessName') "
+									data-ng-class="{active: row == '-businessName'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Applicant <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('applicant') "
+									data-ng-class="{active: row == 'applicant'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-applicant') "
+									data-ng-class="{active: row == '-applicant'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Amount <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('permitFee') "
+									data-ng-class="{active: row == 'permitFee'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-permitFee') "
+									data-ng-class="{active: row == '-permitFee'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Date Of Application <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('appliedOn') "
+									data-ng-class="{active: row == 'appliedOn'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-appliedOn') "
+									data-ng-class="{active: row == '-appliedOn'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Application Type<span class="glyphicon glyphicon-chevron-up"
+													  data-ng-click=" order('paidStatus') "
+													  data-ng-class="{active: row == 'paidStatus'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-paidStatus') "
+									data-ng-class="{active: row == '-paidStatus'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Invoice Status<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('status') "
+									data-ng-class="{active: row == 'status'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-status') "
+									data-ng-class="{active: row == '-status'}"></span>
+							</div>
+						</th>
+
+						<th>
+							<div class="th">
+								Payment Status <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('paidStatus') "
+									data-ng-class="{active: row == 'paidStatus'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-paidStatus') "
+									data-ng-class="{active: row == '-paidStatus'}"></span>
+							</div>
+						</th>
+
+
+						<th style="width: 60px"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="invoice in currentPageInvoices">
+						<td>{{invoice.count}}</td>
+						<td>{{invoice.appNo}}</td>
+						<td>{{invoice.businessName}}</td>
+						<td>{{invoice.applicant}}</td>
+						<td>{{invoice.permitFee}}</td>
+						<td>{{invoice.appliedOn}}</td>
+						<td>{{invoice.appType}}</td>
+						<td>{{invoice.status}}</td>
+						<td>{{invoice.paidStatus}}</td>
+						<td style="padding: 1px;">
+							<button type="button" class="btn btn-success"
+								style="height: 60px; width: 60px;" tooltip-placement="top"
+								tooltip="View {{invoice.businessName}}"
+								ng-click="viewInvoice(invoice)">
+								<span class="glyphicon glyphicon-pencil" style="top: -2px;"></span>
+							</button>
+						</td>
+
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredInvoices.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="!appViewMode">
+		<section class="panel panel-default">
+
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-6">
+						<section class="panel panel-default">
+							<div class="panel-heading input-sm">
+								<strong><span class="glyphicon glyphicon-th"></span>
+									Business Details </strong>
+							</div>
+							<div class="panel-body">
+								<form role="form">
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="noOfEmployees" class="control-label input-sm">Business
+												Name </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="businessName" ng-model="businessName" readonly>
+										</div>
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="permitTypeSelect" class="control-label input-sm">
+												Business No </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="businessNo" ng-model="businessNo" readonly>
+										</div>
+
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="permitTypeSelect" class="control-label input-sm">
+												Employees </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="noOfEmployees" placeholder="No of Employees"
+												ng-model="noOfEmployees" readonly>
+										</div>
+
+									</div>
+
+									<div class="form-group col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="area" class="control-label input-sm">Area
+											</label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm" id="area"
+												ng-model="area" readonly>
+
+										</div>
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="regNo" class="control-label input-sm">Reg
+												No </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm" id="regNo"
+												ng-model="regNo" readonly>
+
+										</div>
+									</div>
+
+								</form>
+							</div>
+						</section>
+					</div>
+					<div class="col-md-6">
+						<section class="panel panel-default">
+							<div class="panel-heading input-sm">
+								<strong><span class="glyphicon glyphicon-th"></span>
+									Other Details </strong>
+							</div>
+							<div class="panel-body">
+								<form role="form">
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="permitTypeSelect" class="control-label input-sm">
+												Postal Add</label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="postalAdd" placeholder="Postal Address"
+												ng-model="postalAdd" readonly>
+										</div>
+
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="permitTypeSelect" class="control-label input-sm">
+												Email </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="email" class="form-control input-sm"
+												id="inpMemberHomeTele" placeholder="Email" ng-model="email"
+												readonly>
+										</div>
+
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="waterAccNo" class="control-label input-sm"
+												readonly>Phone </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												mask="9999-999-999" id="mobileNo"
+												placeholder="Telephone(Mobile)" ng-model="mobileNo" readonly>
+										</div>
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="waterAccNo" class="control-label input-sm">Water
+											</label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="waterAccNo" placeholder="Water Connection No"
+												ng-model="waterAccNo" readonly>
+										</div>
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="electricityAccNo" class="control-label input-sm">Electricity
+											</label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="electricityAccNo" ng-model="electricityAccNo" readonly>
+
+										</div>
+									</div>
+
+								</form>
+							</div>
+						</section>
+					</div>
+				</div>
+				<section class="panel panel-default">
+					<div class="panel-heading input-sm">
+						<strong><span class="glyphicon glyphicon-th input-sm"></span>
+							{{headerTag}}</strong>
+					</div>
+
+					<div class="panel-body">
+						<div class="form-group col-sm-12">
+							<div class="col-sm-6 noPadding" ng-show="appStatus=='Rejected'">
+								<label class="control-label ">{{rejectMessage}}</label>
+							</div>
+							<div class="col-sm-6 noPadding" ng-show="showReason">
+								<div class="col-sm-4" style="text-align: right;">
+									<label for="permitTypeSelect" class="control-label input-sm">
+										Reason</label>
+								</div>
+								<div class="col-sm-8">
+									<textarea type="text" class="form-control input-sm"
+										id="reasonDesc" ng-model="rejectReason"
+										ng-disabled="isExisting"></textarea>
+								</div>
+							</div>
+							<div class="col-sm-6 noPadding"
+								ng-show="showPaymentDetails==true && appStatus!='Rejected'">
+								<div class="col-sm-4" style="text-align: right;">
+									<label for="permitTypeSelect" class="control-label input-sm">Select
+										Status Type</label>
+								</div>
+								<div class="col-sm-8">
+									<select style="width: 100%" ui-select2=""
+										ng-model="statusSelect" id="statusSelect">
+										<option data-ng-repeat="status in statusList"
+											ng-selected="{{status.statusId}}" value="{{status.statusId}}">{{status.statusName}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-sm-6 noPadding">
+								<table
+									ng-hide="(showPaymentDetails==true) && ((appStatus!='Approved') || (appStatus!='Paid'))"
+									class="table table-bordered table-striped table-responsive input-sm">
+									<thead>
+										<tr>
+											<th>
+												<div class="th">#</div>
+											</th>
+
+											<th>
+												<div class="th">Detail</div>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>Approved By</td>
+											<td>{{approvedUser}}</td>
+										</tr>
+										<tr>
+											<td>Approved/Rejected On</td>
+											<td>{{approvedOn | date : 'shortDate'}}</td>
+										</tr>
+										<tr ng-show="appStatus=='Paid'">
+											<td>Paid By</td>
+											<td>{{paidUser}}</td>
+										</tr>
+										<tr ng-show="appStatus=='Paid'">
+											<td>Paid On</td>
+											<td>{{paidOn | date : 'shortDate'}}</td>
+										</tr>
+										<tr>
+											<td>Fee</td>
+											<td>{{permitFee}}</td>
+										</tr>
+										<tr>
+											<td>Penalty</td>
+											<td>{{penalty}}</td>
+										</tr>
+										<tr>
+											<td>Total</td>
+											<td>{{total}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="col-sm-6 noPadding" ng-hide="showPaymentModes">
+
+								<div class="col-sm-12">
+									<dl class="dl-horizontal">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="serviceCode" class="control-label input-sm">Payment
+												Mode </label>
+										</div>
+										<div class="col-sm-8 noPadding" style="margin-top:5px">
+											<label class="ui-radio"><input name="radio1"
+												ng-model="paymentMode" type="radio" value="C" checked><span>Bank</span></label>
+											<label class="ui-radio"><input name="radio1"
+												ng-model="paymentMode" type="radio" value="M"><span>Mpesa</span></label>
+											<label class="ui-radio"><input name="radio1"
+												ng-model="paymentMode" type="radio" value="K"><span>Cash</span></label>
+										</div>
+
+									</dl>
+								</div>
+								<div class="form-group col-sm-12 noPadding"
+									ng-show="paymentMode=='M'">
+									<div class="col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="mpesaCode" class="control-label input-sm">Mpesa
+												code </label>
+										</div>
+										<div class="col-sm-8 noPadding">
+											<input type="text" class="form-control input-sm"
+												style="width: 100%" id="mpesaCode" placeholder="Mpesa code"
+												ng-model="mpesaCode">
+										</div>
+									</div>
+								</div>
+								<div class="form-group col-sm-12 noPadding"
+									ng-show="false">
+									<div class="col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="mpesaCode" class="control-label input-sm">Receipt
+												No </label>
+										</div>
+										<div class="col-sm-8 noPadding">
+											<input type="text" class="form-control input-sm"
+												style="width: 100%" id="mpesaCode" placeholder="Receipt No"
+												ng-model="mpesaCode">
+										</div>
+									</div>
+								</div>
+								<div class="form-group col-sm-12 noPadding"
+									ng-show="paymentMode=='C'">
+									<div class="col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="bankName" class="control-label input-sm">Bank
+												Name</label>
+										</div>
+										<div class="col-sm-8 noPadding">
+											<input type="text" class="form-control input-sm"
+												style="width: 100%" id="bankName" placeholder="Bank Name"
+												ng-model="bankName">
+										</div>
+
+									</div>
+								</div>
+								<div class="form-group col-sm-12 noPadding"
+									ng-show="paymentMode=='C'">
+									<div class="col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="accNo" class="control-label input-sm">Acc.
+												No </label>
+										</div>
+										<div class="col-sm-8 noPadding">
+											<input type="text" class="form-control input-sm"
+												style="width: 100%" id="accNo" placeholder="Account No"
+												ng-model="accNo">
+										</div>
+
+									</div>
+								</div>
+								<div class="form-group col-sm-12 noPadding"
+									ng-show="paymentMode=='C'">
+									<div class="col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="transNo" class="control-label input-sm">
+												Transaction No</label>
+										</div>
+										<div class="col-sm-8 noPadding">
+											<input type="text" class="form-control input-sm"
+												style="width: 100%" id="transNo"
+												placeholder="Transaction No" ng-model="transNo">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+
+							<button type="button" class="btn btn-info input-sm"
+								ng-hide="(appStatus=='Paid') || (appStatus=='Rejected') "
+								style="width: 120px" ng-click="updInvoiceStatus()">
+								<span class="glyphicon glyphicon-arrow-right"> Save </span>
+							</button>
+							<a class="btn btn-success input-sm" ng-href="{{url}}"
+								ng-click="printInvoice()" target="_blank"
+								ng-show="(paidStatus!='Paid' && appStatus=='Approved')">Print Invoice</a>
+								<a class="btn btn-success input-sm" ng-href="{{url}}"
+								ng-click="printInvoice()" target="_blank"
+								ng-show="(paidStatus=='Paid' && appStatus=='Paid')">Print Invoice receipt</a>
+							<button type="button" class="btn btn-warning input-sm"
+								style="width: 100px" ng-click="cancelInvoice()">
+								<span class="glyphicon glyphicon-remove"> Cancel </span>
+							</button>
+						</div>
+
+
+					</div>
+				</section>
+
+			</div>
+		</section>
+
+	</form>
+
+
+</div>

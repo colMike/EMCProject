@@ -1,0 +1,372 @@
+
+<div class="page" ng-controller="permitsReportCtrl">
+	<form class="form-horizontal formFadeIn" role="form" ng-hide="(showSearchDetails == true)">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>Permit Report
+				</strong>
+
+			</div>
+			<div class="panel-body">
+
+				<div class="form-group col-sm-12 noPadding">
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="inpCatCode" class="control-label input-sm">
+								From Date</label>
+						</div>
+
+						<div class="col-sm-8 noPadding" ng-controller="DatepickerDemoCtrl">
+							<div class="input-group ui-datepicker">
+								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+								<input type="text" placeholder="Select Date"
+									class="form-control" datepicker-popup="{{format}}"
+									ng-model="mem.FromDt" is-open="opened" min="minDate"
+									max="'2030-12-30'" datepicker-options="dateOptions"
+									date-disabled="disabled(date, mode)" ng-required="true"
+									close-text="Close">
+							</div>
+						</div>
+						<!-- 	<input type="text" id='newFrDt' class="ng-binding" ng-model="mem.FromDt" ng-value="{{mem.FromDt | date:'shortDate'}}"  /> -->
+					</div>
+					<!-- category Name -->
+					<div class="col-sm-6 noPadding">
+						<div class="col-sm-4" style="text-align: right;">
+							<label for="inpCatName" class="control-label input-sm">
+								To Date</label>
+						</div>
+						<div class="col-sm-8 noPadding" ng-controller="DatepickerDemoCtrl">
+							<div class="input-group ui-datepicker">
+								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+								<input type="text" class="form-control"
+									datepicker-popup="{{format}}" placeholder="Select Date"
+									ng-model="mem.ToDt" min="minDate" max="'2030-12-30'"
+									datepicker-options="dateOptions"
+									date-disabled="disabled(date, mode)" ng-required="true"
+									close-text="Close">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group col-sm-12 noPadding"
+					style="padding-top: 10px">
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+
+							<a class="btn btn-success input-sm" ng-href="{{url}}"
+								ng-click="previewReport(mem)" target="_blank">Preview</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</form>
+	
+	<form role="form" class="formFadeIn" ng-hide="(showDetails == true)  ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>
+					Permit Details</strong>
+
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing
+							{{filteredUserTxns.length}}/{{userTxns.length}} entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+
+
+						<th>
+							<div class="th">
+								Applicaton No<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('appNo') "
+									data-ng-class="{active: row == 'appNo'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-appNo') "
+									data-ng-class="{active: row == '-appNo'}"></span>
+							</div>
+						</th>
+						<!-- 						<th> -->
+						<!-- 							<div class="th"> -->
+						<!-- 							Entry Point<span class="glyphicon glyphicon-chevron-up" -->
+						<!-- 									data-ng-click=" order('gateName') " -->
+						<!-- 									data-ng-class="{active: row == 'gateName'}"></span><span -->
+						<!-- 									class="glyphicon glyphicon-chevron-down" -->
+						<!-- 									data-ng-click=" order('-gateName') " -->
+						<!-- 									data-ng-class="{active: row == '-gateName'}"></span> -->
+						<!-- 							</div> -->
+						<!-- 						</th> -->
+						<th>
+							<div class="th">
+								Business Name<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('serialNo') "
+									data-ng-class="{active: row == 'serialNo'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-serialNo') "
+									data-ng-class="{active: row == '-serialNo'}"></span>
+							</div>
+						</th>
+						<!-- 						<th> -->
+						<!-- 							<div class="th"> -->
+						<!-- 								Date<span class="glyphicon glyphicon-chevron-up" -->
+						<!-- 									data-ng-click=" order('txnDate') " -->
+						<!-- 									data-ng-class="{active: row == 'txnDate'}"></span><span -->
+						<!-- 									class="glyphicon glyphicon-chevron-down" -->
+						<!-- 									data-ng-click=" order('-txnDate') " -->
+						<!-- 									data-ng-class="{active: row == '-txnDate'}"></span> -->
+						<!-- 							</div> -->
+						<!-- 						</th> -->
+
+						<th>
+							<div class="th">
+								Business No <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('overAllAmount') "
+									data-ng-class="{active: row == 'overAllAmount'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-overAllAmount') "
+									data-ng-class="{active: row == '-overAllAmount'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Permit No <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('totOnlineAmount') "
+									data-ng-class="{active: row == 'totOnlineAmount'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-totOnlineAmount') "
+									data-ng-class="{active: row == '-totOnlineAmount'}"></span>
+							</div>
+						</th>
+
+						<th>
+							<div class="th">
+								Permit Expiry <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('totOfflineAmount') "
+									data-ng-class="{active: row == 'totOfflineAmount'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-totOfflineAmount') "
+									data-ng-class="{active: row == '-totOfflineAmount'}"></span>
+							</div>
+						</th>
+
+						<th>
+							<div class="th">
+								Plot No <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('totInvalidAmount') "
+									data-ng-class="{active: row == 'totInvalidAmount'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-totInvalidAmount') "
+									data-ng-class="{active: row == '-totInvalidAmount'}"></span>
+							</div>
+						</th>
+
+						<th>
+							<div class="th">
+								Is Paid <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('totVoidAmount') "
+									data-ng-class="{active: row == 'totVoidAmount'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-totVoidAmount') "
+									data-ng-class="{active: row == '-totVoidAmount'}"></span>
+							</div>
+						</th>
+
+						<th>
+							<div class="th">
+								Created By<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('totNetAmount') "
+									data-ng-class="{active: row == 'totNetAmount'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-totNetAmount') "
+									data-ng-class="{active: row == '-totNetAmount'}"></span>
+
+						<th style="width: 60px">view</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="txn in currentPageUserTxns">
+
+						<td >{{txn.appNo}}</td>
+						<!--  						<td>{{txn.gateName}}</td>  -->
+						<td>{{txn.businessName}}</td>
+						<td >{{txn.businessNo}}</td>
+						<td>{{txn.permitNo}}</td>
+
+						<td>{{txn.expiryDate}}</td>
+
+						<td style="color:red;">{{txn.plotNo}}</td>
+
+						<!-- <td style="color:green;">{{txn.paid}}</td> -->
+						<td style="color:green;">{{txn.appType | uppercase}}</td>
+
+						<td>{{txn.permitUser}}</td>
+
+						<td style="padding: 1px;">
+							<button type="button" class="btn btn-info"
+								style="height: 25px; width: 60px;" tooltip-placement="top"
+								tooltip="View{{txn.zNumber}}" ng-click="viewDetails(txn)">
+								<span class="glyphicon glyphicon-pencil" style="top: -2px;"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredUserTxns.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<form role="form" class="formFadeIn" ng-hide="permitViewMode == false ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm"></div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+						<table id="permitPDF">
+							<tbody>
+								<tr>
+									<td>Single Permit No:<br> &nbsp;&nbsp;&nbsp;&nbsp; <strong>{{permitNo}}</strong></td>
+									<td align="center"><img
+										src="https://192.168.13.14/county_solution/assets/images/arms-small.png">
+									</td>
+									<td>For the year: {{validity}}</td>
+								</tr>
+								<tr>
+									<td colspan="3" align="center">
+										<h3>SIAYA COUNTY</h3>
+										<!-- <h4>Siaya Sub-County</h4> -->
+										<h5>P.O BOX 200-344, County HQ</h5>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<h4>GRANTS THIS SINGLE BUSINESS PERMIT TO:</h4>
+									</td>
+									<td align="right">ORIGINAL</td>
+								</tr>
+								<tr>
+									<td colspan="2" align="left"><strong>Applicants/Business/Commercial
+											Name:</strong><br> {{businessName}}<br> <br></td>
+									<td align="right"><strong>Account:</strong> <br>
+										{{businessNo}}</td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										<p>
+											<strong>To engage in the
+												Activity/Business/Profession or Occupation of:</strong> <br>
+											{{businessDesc}}
+										</p> <br>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										<p>
+											<strong>Having paid a Single Business Permit Fee of
+												Kshs:</strong>{{permitFee}} <br> <strong>(In words):</strong><br>
+											one hundred Shillings only.<br>
+										</p>
+
+									</td>
+								</tr>
+								<tr>
+									<td><strong>Application Form No.</strong> <br>
+										{{appNo}}<br></td>
+									<td><strong>Previous Permit No.</strong> <br> N/A<br>
+										<br></td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										<p>Business Under this Permit shall exclusively be
+											conducted at the address as indicated below:</p>
+
+									</td>
+								</tr>
+								<tr>
+									<td><strong>P.O. BOX </strong><br> ({{postalCode}}) -
+										{{postalAdd}}<br></td>
+									<td><strong>Plot No.</strong> <br>{{plotNo}}</td>
+									<td><strong> Road/Street</strong> <br>Mahanga<br>
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+								</tr>
+								
+								<tr>
+									<td colspan="2"><br> Principal Finance Office (PFO).
+										<br></td>
+								</tr>
+								<tr>
+									<td colspan="3"><br>
+										<p>
+											<small><strong>Notice:</strong> Granting this permit
+												does not exempt the business identified above from<br>
+												complying with the current regulations on Health and Safety
+												as established by the Government of Kenya <br> and the
+												County Government of Vihiga</small>
+										</p></td>
+								</tr>
+
+							</tbody>
+						</table>
+						<div class="form-group">
+							<div class="col-sm-4"></div>
+							<div class="col-sm-4">
+								<div class="panel mini-box">
+									<img alt="" ng-src="{{permitQr}}" height="172px" width="172px">
+								</div>
+							</div>
+							<div class="col-sm-4"></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+
+							<a class="btn btn-success input-sm" ng-href="{{url}}"
+								ng-click="printPermit()" target="_blank"
+								ng-hide="showPaymentDetails==true">Print</a>
+							<button type="button" class="btn btn-warning input-sm"
+								style="width: 100px" ng-click="cancelPermit()">
+								<span class="glyphicon glyphicon-remove"> Cancel </span>
+							</button>
+
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+		</section>
+	</form>
+</div>

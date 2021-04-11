@@ -1,0 +1,428 @@
+
+<style>
+div.checkbox>label {
+	display: inline-block;
+	width: 150px;
+	*/
+}
+</style>
+<div class="page" ng-controller="servicesCtrl">
+	<form role="form" class="formFadeIn" ng-hide=" true ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>
+					Service's List</strong>
+				<button type="button" class="btn btn-primary pull-right"
+					tooltip-placement="left" tooltip="Create New Service"
+					style="margin-top: -3px; height: 25px; margin-right: -8px; width: 60px"
+					ng-click="addService()">
+					<span class="glyphicon glyphicon-plus" style="top: -2px"></span>
+				</button>
+			</div>
+			<div class="panel-body">
+				<div class="form-inline col-sm-12 noPadding">
+					<div class="form-group col-sm-3 noPadding">
+
+						<div class="btn-group-horizontal"
+							data-ng-repeat="service in services">
+							<button type="button" class="btn btn-info"
+								ng-model="service.serviceId"
+								ng-click="loadSubService1(service.serviceId)">
+								<span class="glyphicon glyphicon-briefcase">
+									{{service.serviceName}}</span>
+							</button>
+
+						</div>
+					</div>
+
+					<div class="form-group col-sm-3 noPadding">
+						<div class="btn-group-horizontal"
+							data-ng-repeat="sub in subServices1">
+							<button type="button" class="btn btn-info"
+								ng-model="sub.serviceId"
+								ng-click="loadSubService2(sub.serviceId)">
+								<span class="glyphicon glyphicon-briefcase">
+									{{sub.serviceName}}</span>
+							</button>
+						</div>
+
+					</div>
+					<div class="form-group col-sm-3 noPadding">
+						<div class="btn-group-horizontal"
+							data-ng-repeat="sub in subServices2">
+							<button type="button" class="btn btn-info"
+								ng-model="sub.serviceId"
+								ng-click="loadSubService3(sub.serviceId)">
+								<span class="glyphicon glyphicon-briefcase">
+									{{sub.serviceName}}</span>
+							</button>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- 			<div class="table-filters"> -->
+			<!-- 				<div class="row"> -->
+			<!-- 					<div class="col-sm-4 col-xs-6"> -->
+			<!-- 						<form> -->
+			<!-- 							<input type="text" placeholder="search" -->
+			<!-- 								class="form-control input-sm" data-ng-model="searchKeywords" -->
+			<!-- 								data-ng-keyup="search()"> -->
+			<!-- 						</form> -->
+			<!-- 					</div> -->
+			<!-- 					<div class="col-sm-3 col-xs-6 filter-result-info input-sm"> -->
+			<!-- 						<span> Showing -->
+			<!-- 							{{filteredServices.length}}/{{service.length}} entries </span> -->
+			<!-- 					</div> -->
+			<!-- 				</div> -->
+			<!-- 			</div> -->
+
+			<!-- 			<table -->
+			<!-- 				class="table table-bordered table-striped table-responsive input-sm"> -->
+			<!-- 				<thead> -->
+			<!-- 					<tr> -->
+			<!-- 						<th> -->
+			<!-- 							<div class="th"> -->
+			<!-- 								# <span class="glyphicon glyphicon-chevron-up" -->
+			<!-- 									data-ng-click=" order('serviceId') " -->
+			<!-- 									data-ng-class="{active: row == 'serviceId'}"></span><span -->
+			<!-- 									class="glyphicon glyphicon-chevron-down" -->
+			<!-- 									data-ng-click=" order('-serviceId') " -->
+			<!-- 									data-ng-class="{active: row == '-projectId'}"></span> -->
+			<!-- 							</div> -->
+			<!-- 						</th> -->
+			<!-- 						<th> -->
+			<!-- 							<div class="th"> -->
+			<!-- 								Service Name <span class="glyphicon glyphicon-chevron-up" -->
+			<!-- 									data-ng-click=" order('serviceName') " -->
+			<!-- 									data-ng-class="{active: row == 'serviceName'}"></span><span -->
+			<!-- 									class="glyphicon glyphicon-chevron-down" -->
+			<!-- 									data-ng-click=" order('-serviceName') " -->
+			<!-- 									data-ng-class="{active: row == '-serviceName'}"></span> -->
+			<!-- 							</div> -->
+			<!-- 						</th> -->
+
+			<!-- 						<th style="width: 60px"></th> -->
+			<!-- 					</tr> -->
+			<!-- 				</thead> -->
+			<!-- 				<tbody> -->
+			<!-- 					<tr data-ng-repeat="service in currentPageServices"> -->
+			<!-- 						<td>{{service.serviceId}}</td> -->
+			<!-- 						<td>{{service.serviceName}}</td> -->
+			<!-- 						<td style="padding: 1px;"> -->
+			<!-- 							<button type="button" class="btn btn-success" -->
+			<!-- 								style="height: 25px; width: 60px;" tooltip-placement="top" -->
+			<!-- 								tooltip="Modify {{service.serviceName}}" -->
+			<!-- 								ng-click="editService(service)"> -->
+			<!-- 								<span class="glyphicon glyphicon-pencil" style="top: -2px;"></span> -->
+			<!-- 							</button> -->
+			<!-- 						</td> -->
+			<!-- 					</tr> -->
+			<!-- 				</tbody> -->
+			<!-- 			</table> -->
+
+			<!-- 			<footer class="table-footer input-sm"> -->
+			<!-- 				<div class="row"> -->
+			<!-- 					<div class="col-md-6 page-num-info"> -->
+			<!-- 						<span> Show <select data-ng-model="numPerPage" -->
+			<!-- 							data-ng-options="num for num in numPerPageOpt" -->
+			<!-- 							data-ng-change="onNumPerPageChange()"></select> entries per page -->
+			<!-- 						</span> -->
+			<!-- 					</div> -->
+			<!-- 					<div class="col-md-6 text-right pagination-container"> -->
+			<!-- 						<pagination class="pagination-sm" page="currentPage" -->
+			<!-- 							total-items="filteredServices.length" max-size="4" -->
+			<!-- 							on-select-page="select(page)" items-per-page="numPerPage" -->
+			<!-- 							rotate="false" boundary-links="true"></pagination> -->
+			<!-- 					</div> -->
+			<!-- 				</div> -->
+			<!-- 			</footer> -->
+		</section>
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="serviceEditMode">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>
+					Service Creation</strong>
+			</div>
+			<div class="panel-body">
+
+				<div class="form-group">
+					<label for="serviceCode" class="col-sm-2 control-label input-sm">Parent
+						Service </label>
+
+					<div class="col-sm-10">
+						<select style="width: 100%" ui-select2="" ng-model="serviceSelect"
+							id="serviceSelect">
+							<option data-ng-repeat="service in services"
+								ng-selected="{{service.serviceId}}"
+								value="{{service.serviceId}}">{{service.serviceName}}</option>
+						</select>
+
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2" ng-hide="level1">
+						<select style="width: 100%" ui-select2="" ng-model="level1Select"
+							ng-disabled="l1Disable" id="level1Select">
+							<option data-ng-repeat="sub in subServices1"
+								ng-selected="{{sub.serviceId}}" value="{{sub.serviceId}}">{{sub.serviceName}}</option>
+						</select>
+
+					</div>
+					<div class="col-sm-2" ng-hide="level2">
+						<select style="width: 100%" ui-select2="" ng-model="level2Select"
+							ng-disabled="l2Disable" id="level2Select">
+							<option data-ng-repeat="service in subServices2"
+								ng-selected="{{service.serviceId}}"
+								value="{{service.serviceId}}">{{service.serviceName}}</option>
+						</select>
+
+					</div>
+					<div class="col-sm-2" ng-hide="level3">
+						<select style="width: 100%" ui-select2="" ng-model="level3Select"
+							ng-disabled="l3Disable" id=""level3Select"">
+							<option data-ng-repeat="service in subServices3"
+								ng-selected="{{service.serviceId}}"
+								value="{{service.serviceId}}">{{service.serviceName}}</option>
+						</select>
+
+					</div>
+					<div class="col-sm-2" ng-hide="level4">
+						<select style="width: 100%" ui-select2="" ng-model="level4Select"
+							ng-disabled="l4Disable" id="level4Select">
+							<option data-ng-repeat="service in subServices4"
+								ng-selected="{{service.serviceId}}"
+								value="{{service.serviceId}}">{{service.serviceName}}</option>
+						</select>
+
+					</div>
+					<div class="col-sm-2" ng-hide="level5">
+						<select style="width: 100%" ui-select2="" ng-model="level5Select"
+							id="level5Select">
+							<option data-ng-repeat="service in subServices5"
+								ng-selected="{{service.serviceId}}"
+								value="{{service.serviceId}}">{{service.serviceName}}</option>
+						</select>
+
+					</div>
+					<div class="col-sm-2" ng-hide="level6">
+						<select style="width: 100%" ui-select2="" ng-model="level6Select"
+							id="level6Select">
+							<option data-ng-repeat="service in subServices6"
+								ng-selected="{{service.serviceId}}"
+								value="{{service.serviceId}}">{{service.serviceName}}</option>
+						</select>
+
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="serviceCode" class="col-sm-2 control-label input-sm">Service
+						Code</label>
+
+					<div class="col-sm-10">
+						<input type="text" class="form-control input-sm" id="serviceCode"
+							placeholder="Service Code" ng-model="serviceCode"
+							ng-disabled="isExisting">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="serviceName" class="col-sm-2 control-label input-sm">Service
+						Name</label>
+
+					<div class="col-sm-10">
+						<input type="text" class="form-control input-sm" id="serviceName"
+							placeholder="Service Name" ng-model="serviceName"
+							ng-disabled="isExisting">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="active" class="col-sm-2 control-label input-sm">Active</label>
+
+					<div class="col-sm-10">
+						<label> <input type="checkbox" id="active"
+							ng-model="active" style="margin-top: 10px">
+						</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-success input-sm"
+							style="width: 100px" ng-click="next()">
+							<span class="glyphicon glyphicon-ok">Next</span>
+						</button>
+						<button type="button" class="btn btn-warning input-sm"
+							style="width: 100px" ng-click="cancelService()">
+							<span class="glyphicon glyphicon-remove"> Cancel</span>
+						</button>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="servicePriceMode">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>
+					Service Price Configuration</strong>
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<div class="col-sm-1" style="text-align: right;">
+						<label for="price" class="col-sm-2 control-label ">Price</label>
+					</div>
+					<div class="col-sm-10">
+						<label> <input type="checkbox" id="active"
+							ng-model="priceActive" style="margin-top: 10px">
+						</label>
+					</div>
+				</div>
+
+				<section class="panel panel-default" ng-hide="priceActive==false">
+					<div class="panel-heading input-sm">
+						<strong><span class="glyphicon glyphicon-th"></span>
+							Params</strong>
+					</div>
+					<div class="panel-body">
+						<div class="form-group" ng-hide="priceActive==false">
+							<label for="price" class="col-sm-2 control-label input-sm">Param</label>
+							<div class="col-sm-10 checkbox">
+								<label ng-repeat="param in params"> <input
+									type="checkbox" ng-model="param.isActive" />
+									{{param.paramName}}
+								</label>
+							</div>
+						</div>
+						<!-- 						<div class="form-group"> -->
+						<!-- 							<label for="serviceName" class="col-sm-2 control-label input-sm">value -->
+						<!-- 							</label> -->
+
+						<!-- 							<div class="col-sm-10"> -->
+						<!-- 								<input type="number" class="form-control input-sm" -->
+						<!-- 									id="serviceName" placeholder="Service Value" -->
+						<!-- 									ng-model="serviceValue"> -->
+						<!-- 							</div> -->
+						<!-- 						</div> -->
+
+					</div>
+				</section>
+				<section class="panel panel-default" ng-hide="isPriceAttached==true">
+					<div class="panel-heading input-sm">
+						<strong><span class="glyphicon glyphicon-th"></span>
+							Select Config Type</strong>
+					</div>
+					<div class="panel-body">
+						<div class="form-group col-sm-12 noPadding">
+							<div class="col-sm-12 noPadding">
+								<div class="col-sm-2" style="text-align: right;">
+									<label for=regionSelect " class="control-label input-sm">Select
+										Region </label>
+								</div>
+								<div class="col-sm-10 noPadding">
+									<select style="width: 100%" ui-select2=""
+										ng-model="regionSelect" id="regionSelect">
+										<option data-ng-repeat="region in regions"
+											ng-selected="{{region.regionId}}" value="{{region.regionId}}">{{region.regionName}}</option>
+									</select>
+
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-sm-12 noPadding"
+							ng-hide="showSubCounty" style="margin-left: 10px;overflow-y: auto; max-height:500px">
+							<table
+								class="table table-bordered table-striped table-responsive input-sm">
+								<thead>
+									<tr>
+										<th>
+											<div class="th">Sub-County</div>
+										</th>
+										<th>
+											<div class="th">Value</div>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr data-ng-repeat="subCounty in subCounties">
+
+										<td>{{subCounty.subCountyName}}</td>
+										<td><input type="number" class="form-control input-sm"
+											style="width: 100%" id="subCounty.serviceValue" placeholder="Name"
+											ng-model="subCounty.serviceValue"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="form-group col-sm-12 noPadding" ng-hide="showWards" style="margin-left: 10px;overflow-y: auto; max-height:500px" >
+							<table
+								class="table table-bordered table-striped table-responsive input-sm">
+								<thead>
+									<tr>
+										
+										<th>
+											<div class="th">Ward</div>
+										</th>
+										<th>
+											<div class="th">Value</div>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr data-ng-repeat="ward in wards">
+										
+										<td>{{ward.wardName}}</td>
+										<td><input type="number" class="form-control input-sm"
+											style="width: 100%" id="ward.serviceValue" placeholder="Name"
+											ng-model="ward.serviceValue"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="form-group col-sm-12 noPadding" ng-hide="showMarkets" style="margin-left: 10px;overflow-y: auto; max-height:500px">
+							<table
+								class="table table-bordered table-striped table-responsive input-sm">
+								<thead>
+									<tr>
+										
+										<th>
+											<div class="th">Market</div>
+										</th>
+										<th>
+											<div class="th">Value</div>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr data-ng-repeat="market in markets">
+										
+										<td>{{market.marketName}}</td>
+										<td><input type="number" class="form-control input-sm"
+											style="width: 100%" id="market.serviceValue" placeholder="Name"
+											ng-model="market.serviceValue"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</section>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-success input-sm" 
+							style="width: 100px" ng-click="updService()">
+							<span class="glyphicon glyphicon-ok"> Save</span>
+						</button>
+						<button type="button" class="btn btn-warning input-sm"
+							style="width: 100px" ng-click="cancelService()">
+							<span class="glyphicon glyphicon-remove"> Cancel</span>
+						</button>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</form>
+</div>

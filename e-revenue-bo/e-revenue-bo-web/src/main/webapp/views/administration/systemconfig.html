@@ -1,0 +1,56 @@
+
+<div class="page" ng-controller="configCtrl">
+	<form class="form-horizontal formFadeIn" role="form">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span> System
+					Configuration</strong>
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+
+
+					<label for="serialNo" class="col-sm-2 control-label input-sm"
+						ng-repeat-start="name in configParams" ng-hide="name.name=='Logo'">{{name.name}}</label>
+
+					<div class="col-sm-10" style="margin-top: 10px"
+						ng-hide="name.name=='Logo'">
+						<input type="text" class="form-control input-sm" id="serialNo"
+							placeholder="{{name.name}}" ng-model=name.value>
+					</div>
+					<br ng-repeat-end>
+				</div>
+				<div class="form-group">
+
+
+					<div class="col-sm-4 "
+						style="height: 150px; width: 150px; overflow: hidden;">
+						<img ng-src="{{myCroppedImage}}" ng-model="newfile"
+							ng-hide="capPic" placeholder="Cropped Photo" />
+					</div>
+					<div class="col-sm-offset-2 col-sm-10">
+
+						<input type="file" title="Upload Logo" id="fileInput"
+							data-ui-file-upload class="btn-primary">
+
+
+					</div>
+
+				</div>
+				<div class="form-group">
+					<div class=" col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-success input-sm"
+							style="width: 100px" ng-click="updConfig()">
+							<span class="glyphicon glyphicon-ok">Save</span>
+						</button>
+						<button type="button" class="btn btn-warning input-sm"
+							style="width: 100px" ng-click="cancelConfig()">
+							<span class="glyphicon glyphicon-remove"> Cancel</span>
+						</button>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</form>
+</div>

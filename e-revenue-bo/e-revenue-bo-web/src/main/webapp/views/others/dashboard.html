@@ -1,0 +1,300 @@
+<div class="page page-dashboard" ng-controller="dashBoardCtrl"
+	ng-hide="showDashBoard">
+	<!-- 	<h1>DashBoard</h1> -->
+	<!-- 	<p>Add Information</p> -->
+	<div class="row">
+		<div class="col-lg-3 col-xsm-6">
+			<div class="panel mini-box">
+				<span class="box-icon bg-info"> <i class="fa fa-users"></i>
+				</span>
+				<div class="box-info">
+					<p class="size-h2">{{userCount}}</p>
+					<p class="text-muted">
+						<span data-i18n="Users">Users</span>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 col-xsm-6">
+			<div class="panel mini-box">
+				<span class="box-icon bg-success"> <i
+					class="glyphicon glyphicon-log-in"></i>
+				</span>
+				<div class="box-info">
+					<p class="size-h2">{{marketCount}}</p>
+					<p class="text-muted">
+						<span data-i18n="Markets">Markets</span>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-3 col-xsm-6">
+			<div class="panel mini-box">
+				<span class="box-icon bg-danger"> <i
+					class="glyphicon glyphicon-phone"></i>
+				</span>
+				<div class="box-info">
+					<p class="size-h2">{{deviceCount}}</p>
+					<p class="text-muted">
+						<span data-i18n="Devices">Devices</span>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 col-xsm-6">
+			<div class="panel mini-box">
+				<span class="box-icon bg-facebook"> <i
+					class="fa fa-credit-card"></i>
+				</span>
+				<div class="box-info">
+					<p class="size-h2">{{serviceCount}}</p>
+					<p class="text-muted">
+						<span data-i18n="Services">Services</span>
+					</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<div class="row">
+		<div class="col-lg-3 col-xsm-6">
+			<section class="panel panel-box">
+				<div class="panel-top bg-warning">
+					<i class="text-medium">KES</i>
+				</div>
+				<div class="panel-bottom bg-reverse">
+					<p class="size-h4">{{sbp}}</p>
+					<p class="text-muted">SBP Collections</p>
+				</div>
+			</section>
+
+		</div>
+		<div class="col-lg-3 col-xsm-6">
+			<section class="panel panel-box">
+				<div class="panel-top bg-facebook">
+					<i class="text-medium">KES</i>
+				</div>
+				<div class="panel-bottom bg-reverse">
+					<p class="size-h4">{{totalLand}}</p>
+					<p class="text-muted">LandRates Collections</p>
+				</div>
+			</section>
+
+		</div>
+
+		<div class="col-lg-3 col-xsm-6">
+			<section class="panel panel-box">
+				<div class="panel-top bg-success">
+					<i class="text-medium">KES</i>
+				</div>
+				<div class="panel-bottom bg-reverse">
+					<p class="size-h4">{{pos}}</p>
+					<p class="text-muted">POS Collections</p>
+				</div>
+			</section>
+
+		</div>
+		<div class="col-lg-3 col-xsm-6">
+			<section class="panel panel-box">
+				<div class="panel-top bg-info">
+					<i class=" text-medium">KES</i>
+				</div>
+				<div class="panel-bottom bg-reverse">
+					<p class="size-h4">{{totalCollection}}</p>
+					<p class="text-muted">Total Collections</p>
+				</div>
+			</section>
+
+		</div>
+
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<section class="panel panel-default">
+				<div class="panel-heading">
+					<strong><span class="glyphicon glyphicon-th"></span> <span
+						data-i18n="Servicewise Collection"></span></strong>
+
+				</div>
+				<div class="panel-body">
+					<div data-flot-chart data-data="pieChart.data"
+						data-options="pieChart.options"
+						style="width: 100%; height: 300px;"></div>
+				</div>
+
+			</section>
+		</div>
+
+
+		<div class="col-md-6">
+
+			<section class="panel panel-default">
+				<div class="panel-heading">
+					<strong><span class="glyphicon glyphicon-th"></span> <span
+						data-i18n="Transaction Bar Chart(Current Month)"></span></strong>
+				</div>
+				<div class="panel-body" data-ng-controller="dashBoardCtrl">
+
+					<div morris-chart data-data="data" data-type="bar" data-xkey="year"
+						data-ykeys='["a", "b", "c","d"]'
+						data-labels='["Transactions", "Voids","Invalid", "Net"]'
+						data-bar-colors='["#176799","#42A4BB","#78D6C7","#cb4b4b"]'
+						style="height: 300px;"></div>
+				</div>
+			</section>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-3 col-xsm-6">
+			<section class="panel panel-box">
+				<div class="panel-top bg-warning">
+					<i class="text-medium">KES</i>
+				</div>
+				<div class="panel-bottom bg-reverse">
+					<p class="size-h4">{{totalAmount}}</p>
+					<p class="text-muted">Total Collected Amount(Today)</p>
+				</div>
+			</section>
+
+		</div>
+		<div class="col-lg-3 col-xsm-6">
+			<section class="panel panel-box">
+				<div class="panel-top bg-facebook">
+					<i class="text-medium">KES</i>
+				</div>
+				<div class="panel-bottom bg-reverse">
+					<p class="size-h4">{{voideAmount}}</p>
+					<p class="text-muted">Voided Amount(Today)</p>
+				</div>
+			</section>
+
+		</div>
+
+		<div class="col-lg-3 col-xsm-6">
+			<section class="panel panel-box">
+				<div class="panel-top bg-danger">
+					<i class="text-medium">KES</i>
+				</div>
+				<div class="panel-bottom bg-reverse">
+					<p class="size-h4">{{invalidAmount}}</p>
+					<p class="text-muted">Invalid Amount(Today)</p>
+				</div>
+			</section>
+
+		</div>
+		<div class="col-lg-3 col-xsm-6">
+			<section class="panel panel-box">
+				<div class="panel-top bg-success">
+					<i class=" text-medium">KES</i>
+				</div>
+				<div class="panel-bottom bg-reverse">
+					<p class="size-h4">{{netAmount}}</p>
+					<p class="text-muted">Net Amount(Today)</p>
+				</div>
+			</section>
+
+		</div>
+
+	</div>
+<!-- 	<div class="row"> -->
+<!-- 		<div class="col-md-6"> -->
+<!-- 			<!-- Accordion --> 
+<!-- 			<section class="panel panel-profile "> -->
+<!-- 				<div class="panel-heading bg-facebook clearfix"> -->
+<!-- 					<i class="fa fa-calendar text-large pull-left" -->
+<!-- 						style="margin-left: 5px"></i> -->
+
+<!-- 					<h4 class="input-sm">Monthly Statistics-SubCounty</h4> -->
+<!-- 					<h4 style="margin-left: 30px"></h4> -->
+
+<!-- 				</div> -->
+
+
+<!-- 				<div class="panel-body"> -->
+<!-- 					<accordion close-others="oneAtATime" class="ui-accordion "> -->
+<!-- 					<accordion-group heading="This Month" is-open="true"> -->
+<!-- 					<ul class="list-group" -->
+<!-- 						ng-repeat="item in mothnlyStatistics.currentMonth"> -->
+<!-- 						<li class="list-group-item"><span class="badge badge-danger">{{item.amount}} -->
+<!-- 								ksh</span><i class="glyphicon glyphicon-stats"></i>{{item.subCountyName}} -->
+<!-- 						</li> -->
+<!-- 					</ul> -->
+<!-- 					</accordion-group> <accordion-group heading="Last Month" is-open="false"> -->
+<!-- 					<ul class="list-group" -->
+<!-- 						ng-repeat="item in mothnlyStatistics.previousMonth"> -->
+<!-- 						<li class="list-group-item"><span class="badge badge-danger">{{item.amount}} -->
+<!-- 								ksh</span><i class="glyphicon glyphicon-stats"></i>{{item.subCountyName}} -->
+<!-- 						</li> -->
+<!-- 					</ul> -->
+<!-- 					</accordion-group> <accordion-group heading="Two Months ago" is-open="false"> -->
+<!-- 					<ul class="list-group" -->
+<!-- 						ng-repeat="item in mothnlyStatistics.twoMonth"> -->
+<!-- 						<li class="list-group-item"><span class="badge badge-danger">{{item.amount}} -->
+<!-- 								ksh</span><i class="glyphicon glyphicon-stats"></i>{{item.subCountyName}} -->
+<!-- 						</li> -->
+<!-- 					</ul> -->
+<!-- 					</accordion-group> -->
+<!-- 				</div> -->
+<!-- 			</section> -->
+<!-- 			<!-- end Accordion --> 
+<!-- 		</div> -->
+
+
+<!-- 		<div class="col-md-6"> -->
+<!-- 			<!-- Pofile panel -->
+<!-- 			<div class="panel panel-profile"> -->
+<!-- 				<div class="panel-heading bg-primary clearfix"> -->
+<!-- 					<i class="fa fa-user text-large pull-left" style="margin-left: 5px"></i> -->
+
+<!-- 					<h4 class="input-sm">User Statistics</h4> -->
+<!-- 					<h4 style="margin-left: 30px"></h4> -->
+
+<!-- 				</div> -->
+
+<!-- 				<div class="ui-tab-container"> -->
+<!-- 					<tabset class="ui-tab"> <tab heading="Ascending"> -->
+<!-- 					<ul class="list-group" ng-repeat="item in userStatistics.userDsc"> -->
+<!-- 						<li class="list-group-item"><span class="badge badge-warning">{{item.amount}} -->
+<!-- 								ksh</span><span class="badge badge-info">{{item.tickets}} -->
+<!-- 								Tickets</span> <i class="icon glyphicon glyphicon-user"></i> -->
+<!-- 							{{item.userName}}</li> -->
+<!-- 												 <ul class="list-group"> -->
+<!-- 						                    <li class="list-group-item"> -->
+<!-- 						                        <span class="badge">14</span> -->
+<!-- 						                        <i class="fa fa-envelope-o"></i> -->
+<!-- 						                        Cras justo odio -->
+<!-- 						                    </li> -->
+<!-- 						                    <li class="list-group-item"> -->
+<!-- 						                        <span class="badge badge-warning">2</span> -->
+<!-- 						                        <i class="fa fa-comments-o"></i> -->
+<!-- 						                        Dapibus ac facilisis in -->
+<!-- 						                    </li> -->
+<!-- 						                    <li class="list-group-item"> -->
+<!-- 						                        <span class="badge badge-info">1</span> -->
+<!-- 						                        <i class="fa fa-heart-o"></i> -->
+<!-- 						                        Morbi leo risus -->
+<!-- 						                    </li> -->
+<!-- 						                    <li class="list-group-item"> -->
+<!-- 						                        <span class="badge badge-success">3</span> -->
+<!-- 						                        <i class="fa fa-folder-open-o"></i> -->
+<!-- 						                        Vestibulum at eros -->
+<!-- 						                    </li> -->
+<!-- 						                </ul> -->
+<!-- 					</ul> -->
+<!-- 					</tab> <tab heading="Descending"> -->
+<!-- 					<ul class="list-group" ng-repeat="item in userStatistics.userAsc"> -->
+<!-- 						<li class="list-group-item"><span style="margin-left: 20px" -->
+<!-- 							class="badge badge-warning">{{item.amount}} ksh</span><span -->
+<!-- 							class="badge badge-info">{{item.tickets}} Tickets</span> <i -->
+<!-- 							class="icon glyphicon glyphicon-user"></i> {{item.userName}}</li> -->
+<!-- 					</ul> -->
+<!-- 					</tab> </tabset> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+
+<!-- 		</div> -->
+<!-- 	</div> -->
+
+
+</div>

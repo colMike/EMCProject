@@ -1,0 +1,192 @@
+<div class="page" ng-controller="issueDeviceCtrl">
+	<form role="form" class="formFadeIn"
+		ng-hide="issueDeviceEditMode == true ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span> Issued
+					Device's List</strong>
+				<button type="button" class="btn btn-primary pull-right"
+					tooltip-placement="left" tooltip="Issue Device"
+					style="margin-top: -3px; height: 25px; margin-right: -8px; width: 60px"
+					ng-click="addIssueDevice()">
+					<span class="glyphicon glyphicon-plus" style="top: -2px"></span>
+				</button>
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing
+							{{filteredIssueDevices.length}}/{{issueDevice.length}} entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+						<th>
+							<div class="th">
+								# <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('count') "
+									data-ng-class="{active: row == 'count'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-count') "
+									data-ng-class="{active: row == '-count'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								User Name <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('userName') "
+									data-ng-class="{active: row == 'userName'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-userName') "
+									data-ng-class="{active: row == '-userName'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								User Full Name <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('name') "
+									data-ng-class="{active: row == 'name'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-name') "
+									data-ng-class="{active: row == '-name'}"></span>
+							</div>
+						</th>
+							<th>
+							<div class="th">
+								Market<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('marketName') "
+									data-ng-class="{active: row == 'marketName'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-marketName') "
+									data-ng-class="{active: row == '-marketName'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Serial No <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('serialNo') "
+									data-ng-class="{active: row == 'serialNo'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-serialNo') "
+									data-ng-class="{active: row == '-serialNo'}"></span>
+							</div>
+						</th>
+
+						<th style="width: 60px"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="issueDevice in currentPageIssueDevices">
+						<td>{{issueDevice.count}}</td>
+						<td ng-hide="true">{{issueDevice.issueId}}</td>
+						<td>{{issueDevice.userName}}</td>
+						<td>{{issueDevice.name}}</td>
+						<td>{{issueDevice.marketName}}</td>
+						<td>{{issueDevice.serialNo}}</td>
+
+						<td style="padding: 1px;">
+							<button type="button" class="btn btn-success"
+								style="height: 25px; width: 60px;" tooltip-placement="top"
+								tooltip="Modify {{issueDevice.serialNo}}"
+								ng-click="editIssueDevice(issueDevice)">
+								<span class="glyphicon glyphicon-pencil" style="top: -2px;"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredIssueDevices.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="!issueDeviceEditMode">
+		<section class="panel panel-default">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>Issue
+					Device</strong>
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label for="userSelect" class="col-sm-2 control-label input-sm">Select
+						User</label>
+
+					<div class="col-sm-10">
+						<select style="width: 100%" ui-select2="" ng-model="userSelect"
+							ng-hide="editMode==false" id="userSelect">
+							<option data-ng-repeat="user in users"
+								ng-selected="{{user.userId}}" value="{{user.userId}}">{{user.userFullName}}</option>
+						</select> <input type="text" class="form-control input-sm" id="userName"
+							ng-hide="editMode" placeholder="User Name" ng-model="userName">
+					</div>
+				</div>
+
+				<div class="form-group" ng-hide="selectDevice">
+					<label for="serialNo" class="col-sm-2 control-label input-sm">Select
+						Device</label>
+
+					<div class="col-sm-10">
+						<select style="width: 100%" ui-select2="" ng-model="deviceSelect"
+							ng-hide="editMode==false" id="deviceSelect">
+							<option data-ng-repeat="device in devices"
+								ng-selected="{{device.id}}" value="{{device.id}}">{{device.serialNo}}</option>
+						</select> <input type="text" class="form-control input-sm" id="serialNo"
+							ng-hide="editMode" placeholder="Serial No" ng-model="serialNo">
+					</div>
+				</div>
+				<div class="form-group" ng-hide="selectMode">
+					<label for="serialNo" class="col-sm-2 control-label input-sm"></label>
+					<div class="col-sm-10">
+						<label class="ui-radio"><input name="radio1" type="radio"
+							ng-model="rdNewDevice" ng-change='showDeviceSelect(rdNewDevice)'
+							value="ND"><span>New Device</span></label> <label
+							class="ui-radio"><input name="radio1" type="radio"
+							ng-model="rdNewDevice" ng-change='showDeviceSelect(rdNewDevice)'
+							value="RD"><span>Return Device</span></label>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class=" col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-success input-sm"
+							style="width: 100px" ng-click="updIssueDevice()">
+							<span class="glyphicon glyphicon-ok">Save</span>
+						</button>
+						<button type="button" class="btn btn-warning input-sm"
+							style="width: 100px" ng-click="cancelIssueDevice()">
+							<span class="glyphicon glyphicon-remove"> Cancel</span>
+						</button>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</form>
+</div>

@@ -1,0 +1,70 @@
+<div class="page" ng-controller="LandUploadCtrl">
+	<form role="form" class="form-horizontal formFadeIn">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span> Upload
+					Land rates </strong>
+			</div>
+				<div class="panel-body">
+				<div class="form-group col-sm-12 noPadding">
+				</div>
+				<div class="form-inline col-sm-12 noPadding">
+					<div class="form-group col-sm-12 noPadding"
+						style="padding-right: 1px">
+						<label for="branchSelect"
+							class="col-sm-2 control-label input-sm"
+							style="text-align: right;">Select SubCounty</label>
+
+						<div class="col-sm-10 noPadding">
+							<select style="width: 100%" ui-select2="subCountySelect"
+								ng-model="subCountySelect" id="subCountySelect">
+								<option data-ng-repeat="sub in subCounties"
+								  
+								  										ng-selected="{{sub.subCountyId}}" value="{{sub.subCountyId}}">{{sub.subCountyName}}</option>
+
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+	
+		</section>
+	</form>
+
+
+	<section class="panel panel-default">
+		<div class="panel-heading input-sm">
+			<strong><span class="glyphicon glyphicon-th"></span> Upload Land Rate
+				Details </strong>
+		</div> 
+		<div class="panel-body">
+					<!--Start File Upload-->
+			<b>Please select Excel File Format</b> <br></br>
+
+			<form class="form-horizontal formFadeIn"
+				ng-submit="uploadUserDetails()">
+				<fieldset>
+					<div class="form-group">
+						<label for="uploadfile" class="col-sm-2 control-label">File:
+						</label>
+						<div class="col-sm-10">
+							<input type="file" title="Select File" id="uploadfile"
+								file-model="myFile"  onChange="angular.element(this).scope().filesChanged(this)" data-ui-file-upload class="btn-primary"
+								accept=".application/vnd.sealed-xls,.xlsx" required="true">
+						</div>
+					</div>
+
+					<div class="form-group"></div>
+					<div class="form-group">
+						<label for="uploadfile" class="col-sm-2 control-label"> </label>
+						<div class="col-sm-10">
+							<button type="submit" class="btn btn-success">Upload</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+			<!--End File Upload-->
+
+		</div>
+	</section>
+</div>

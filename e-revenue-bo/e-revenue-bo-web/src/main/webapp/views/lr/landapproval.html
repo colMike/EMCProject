@@ -1,0 +1,555 @@
+<div class="page" ng-controller="landapprovalCtrl">
+	<form role="form" class="formFadeIn" ng-hide="landViewMode == true ">
+		<section class="panel panel-default table-dynamic">
+			<div class="panel-heading input-sm">
+				<strong><span class="glyphicon glyphicon-th"></span>
+					LandInvoice's List</strong>
+
+			</div>
+
+			<div class="table-filters">
+				<div class="row">
+					<div class="col-sm-4 col-xs-6">
+						<form>
+							<input type="text" placeholder="search"
+								class="form-control input-sm" data-ng-model="searchKeywords"
+								data-ng-keyup="search()">
+						</form>
+					</div>
+					<div class="col-sm-3 col-xs-6 filter-result-info input-sm">
+						<span> Showing
+							{{filteredlandInvoices.length}}/{{landinvoices.length}} entries </span>
+					</div>
+				</div>
+			</div>
+
+			<table
+				class="table table-bordered table-striped table-responsive input-sm">
+				<thead>
+					<tr>
+						<th>
+							<div class="th">
+								# <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('count') "
+									data-ng-class="{active: row == 'count'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-count') "
+									data-ng-class="{active: row == '-count'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Reg No<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('regNo') "
+									data-ng-class="{active: row == 'regNo'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-regNo') "
+									data-ng-class="{active: row == '-regNo'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Plot Number <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('plotNumber') "
+									data-ng-class="{active: row == 'plotNumber'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-plotNumber') "
+									data-ng-class="{active: row == '-plotNumber'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Applicant <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('applicant') "
+									data-ng-class="{active: row == 'applicant'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-applicant') "
+									data-ng-class="{active: row == '-applicant'}"></span>
+							</div>
+						</th>
+
+						<th>
+							<div class="th">
+								Date Of Application <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('appliedOn') "
+									data-ng-class="{active: row == 'appliedOn'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-appliedOn') "
+									data-ng-class="{active: row == '-appliedOn'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Land Invoice Status<span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('status') "
+									data-ng-class="{active: row == 'status'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-status') "
+									data-ng-class="{active: row == '-status'}"></span>
+							</div>
+						</th>
+						<th>
+							<div class="th">
+								Payment Status <span class="glyphicon glyphicon-chevron-up"
+									data-ng-click=" order('paidStatus') "
+									data-ng-class="{active: row == 'paidStatus'}"></span><span
+									class="glyphicon glyphicon-chevron-down"
+									data-ng-click=" order('-paidStatus') "
+									data-ng-class="{active: row == '-paidStatus'}"></span>
+							</div>
+						</th>
+
+
+						<th style="width: 60px"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="landinvoice in currentPagelandInvoices">
+						<td>{{landinvoice.count}}</td>
+						<td>{{landinvoice.regNo}}</td>
+						<td>{{landinvoice.plotNumber}}</td>
+						<td>{{landinvoice.applicant}}</td>
+						<td>{{landinvoice.appliedOn}}</td>
+						<td>{{landinvoice.status}}</td>
+						<td>{{landinvoice.paidStatus}}</td>
+						<td style="padding: 1px;">
+							<button type="button" class="btn btn-success"
+								style="height: 25px; width: 60px;" tooltip-placement="top"
+								tooltip="View {{landinvoice.plotNumber}}"
+								ng-click="viewlandInvoice(landinvoice)">
+								<span class="glyphicon glyphicon-pencil" style="top: -2px;"></span>
+							</button>
+						</td>
+
+					</tr>
+				</tbody>
+			</table>
+
+			<footer class="table-footer input-sm">
+				<div class="row">
+					<div class="col-md-6 page-num-info">
+						<span> Show <select data-ng-model="numPerPage"
+							data-ng-options="num for num in numPerPageOpt"
+							data-ng-change="onNumPerPageChange()"></select> entries per page
+						</span>
+					</div>
+					<div class="col-md-6 text-right pagination-container">
+						<pagination class="pagination-sm" page="currentPage"
+							total-items="filteredlandInvoices.length" max-size="4"
+							on-select-page="select(page)" items-per-page="numPerPage"
+							rotate="false" boundary-links="true"></pagination>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<form class="form-horizontal formFadeIn" role="form"
+		ng-hide="!landViewMode">
+		<section class="panel panel-default">
+
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-6">
+						<section class="panel panel-default">
+							<div class="panel-heading input-sm">
+								<strong><span class="glyphicon glyphicon-th"></span>
+									Land Details </strong>
+							</div>
+							<div class="panel-body">
+								<form role="form">
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="plotNumber" class="control-label input-sm">
+												Plot Number </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="plotNumber" ng-model="plotNumber" readonly>
+										</div>
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="mapSheetNumber" class="control-label input-sm">
+												Map Sheet Number </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="mapSheetNumber" ng-model="mapSheetNumber" readonly>
+										</div>
+
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="location" class="control-label input-sm">
+												Farm Name </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm" id="acreage"
+												placeholder="Farm Name" ng-model="location" readonly>
+										</div>
+
+									</div>
+
+									<div class="form-group col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="titleDeedNumber" class="control-label input-sm">Title
+												Deed Number </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="titleDeedNumber" ng-model="titleDeedNumber" readonly>
+
+										</div>
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="regNo" class="control-label input-sm">Reg
+												No </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm" id="regNo"
+												ng-model="regNo" readonly>
+
+										</div>
+									</div>
+									<!--  <div class="form-group col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="permitTypeSelect" class="control-label input-sm">Land Type
+											</label>
+										</div>
+										<div class="col-sm-8">
+											<select disabled style="width: 100%" ui-select2="" ng-model="permitTypeSelect"
+						                             id="permitTypeSelect">
+					                           <option data-ng-repeat="permitType in permitTypes"
+					                              ng-selected="{{permitType.permitTypeId}}" value="{{permitType.permitTypeId}}">{{permitType.permitTypeName}}</option>
+				                            </select>
+										</div>
+									</div> -->
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="landTypeName" class="control-label input-sm">
+												Land Type</label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="landTypeName" ng-model="landTypeName" readonly>
+										</div>
+
+									</div>
+								</form>
+							</div>
+						</section>
+					</div>
+					<div class="col-md-6">
+						<section class="panel panel-default">
+							<div class="panel-heading input-sm">
+								<strong><span class="glyphicon glyphicon-th"></span>
+									Other Details </strong>
+							</div>
+							<div class="panel-body">
+								<form role="form">
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="name" class="control-label input-sm">
+												Name</label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm" id="name"
+												placeholder="name" ng-model="name" readonly>
+										</div>
+
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="krapin" class="control-label input-sm">
+												krapin </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm" id="krapin"
+												placeholder="krapin" ng-model="krapin" readonly>
+										</div>
+
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="nationalIdNumber" class="control-label input-sm"
+												readonly>National Id Number </label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="nationalIdNumber" placeholder="nationalIdNumber"
+												ng-model="nationalIdNumber" readonly>
+										</div>
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="subCountyName" class="control-label input-sm">
+												Sub County</label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="subCountyName" ng-model="subCountyName" readonly>
+										</div>
+
+									</div>
+									<div class="form-group col-sm-12 noPadding">
+
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="wardName" class="control-label input-sm">
+												Ward</label>
+										</div>
+										<div class="col-sm-8">
+											<input type="text" class="form-control input-sm"
+												id="wardName" ng-model="wardName" readonly>
+										</div>
+
+									</div>
+
+
+								</form>
+							</div>
+						</section>
+					</div>
+				</div>
+				<section class="panel panel-default">
+					<div class="panel-heading input-sm">
+						<strong><span class="glyphicon glyphicon-th input-sm"></span>
+							{{headerTag}}</strong>
+					</div>
+
+					<div class="panel-body">
+						<div class="form-group col-sm-12">
+							<div class="col-sm-6 noPadding" ng-show="landStatus=='Rejected'">
+								<label class="control-label ">{{rejectMessage}}</label>
+							</div>
+							<div class="col-sm-6 noPadding" ng-show="showReason">
+								<div class="col-sm-4" style="text-align: right;">
+									<label for="reason" class="control-label input-sm">
+										Reason</label>
+								</div>
+								<div class="col-sm-8">
+									<textarea type="text" class="form-control input-sm"
+										id="reasonDesc" ng-model="rejectReason"
+										ng-disabled="isExisting"></textarea>
+								</div>
+							</div>
+							<div class="col-sm-6 noPadding"
+								ng-show="((landStatus!='Approved') && (paidStatus!='Paid'))">
+								<div class="col-sm-4" style="text-align: right;">
+									<label for="status" class="control-label input-sm">Select
+										Status Type</label>
+								</div>
+								<div class="col-sm-8">
+									<select style="width: 100%" ui-select2=""
+										ng-model="statusSelect" id="statusSelect">
+										<option data-ng-repeat="status in statusList"
+											ng-selected="{{status.statusId}}" value="{{status.statusId}}">{{status.statusName}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-sm-6 noPadding">
+								<table
+									ng-show="( (landStatus==='Approved') || (paidStatus==='Paid'))"
+									class="table table-bordered table-striped table-responsive input-sm">
+									<thead>
+										<tr>
+											<th>
+												<div class="th">#</div>
+											</th>
+
+											<th>
+												<div class="th">Detail</div>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>Approved By</td>
+											<td>{{approvedUser}}</td>
+										</tr>
+										<tr>
+											<td>Approved/Rejected On</td>
+											<td>{{approvedOn | date : 'shortDate'}}</td>
+										</tr>
+										<tr ng-show="landStatus=='Paid'">
+											<td>Paid By</td>
+											<td>{{paidUser}}</td>
+										</tr>
+										<tr ng-show="landStatus=='Paid'">
+											<td>Paid On</td>
+											<td>{{paidOn | date : 'shortDate'}}</td>
+										</tr>
+										<tr>
+											<td>Fee</td>
+											<td>{{fee}}</td>
+										</tr>
+										<tr>
+											<td>Acreage</td>
+											<td>{{acreage}}</td>
+										</tr>
+										<tr>
+											<td>Penalty</td>
+											<td>{{penalty}}</td>
+										</tr>
+										<tr>
+											<td>Amount Paid</td>
+											<td>{{amountpaid}}</td>
+										</tr>
+										<tr>
+											<td>Outstanding</td>
+											<td>{{balance}}</td>
+										</tr>
+										<tr>
+											<td>Total</td>
+											<td>{{total}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="col-sm-6 noPadding" ng-hide="showPaymentModes">
+
+								<div class="col-sm-12" ng-hide="paidStatus=='Paid'">
+									<dl class="dl-horizontal">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="serviceCode " class="control-label input-sm">Payment
+												Mode </label>
+										</div>
+										<div class="col-sm-8 noPadding" style="margin-top:5px">
+											<label class="ui-radio"><input name="radio1"
+												ng-model="paymentMode" type="radio" value="C" checked><span>Bank</span></label>
+											<label class="ui-radio"><input name="radio1"
+												ng-model="paymentMode" type="radio" value="M"><span>Mpesa</span></label>
+											<label class="ui-radio"><input name="radio1"
+												ng-model="paymentMode" type="radio" value="K"><span>Cash</span></label>
+										</div>
+									</dl>
+								</div>
+
+								<div class="form-group col-sm-12 noPadding"
+									ng-show="paymentMode=='M'">
+									<div class="col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="mpesaCode" class="control-label input-sm">Mpesa
+												code </label>
+										</div>
+										<div class="col-sm-8 noPadding">
+											<input type="text" class="form-control input-sm"
+												style="width: 100%" id="mpesaCode" placeholder="Mpesa code"
+												ng-model="mpesaCode">
+										</div>
+									</div>
+								</div>
+								<div class="form-group col-sm-12 noPadding"
+									ng-show="false">
+									<div class="col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="mpesaCode" class="control-label input-sm">Receipt
+												No </label>
+										</div>
+										<div class="col-sm-8 noPadding">
+											<input type="text" class="form-control input-sm"
+												style="width: 100%" id="mpesaCode" placeholder="Receipt No"
+												ng-model="mpesaCode">
+										</div>
+									</div>
+								</div>
+								<div class="form-group col-sm-12 noPadding"
+									ng-show="paymentMode=='C'">
+									<div class="col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="bankName" class="control-label input-sm">Bank
+												Name</label>
+										</div>
+										<div class="col-sm-8 noPadding">
+											<input type="text" class="form-control input-sm"
+												style="width: 100%" id="bankName" placeholder="Bank Name"
+												ng-model="bankName">
+										</div>
+
+									</div>
+								</div>
+								<div class="form-group col-sm-12 noPadding"
+									ng-show="paymentMode=='C'">
+									<div class="col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="accNo" class="control-label input-sm">Acc.
+												No </label>
+										</div>
+										<div class="col-sm-8 noPadding">
+											<input type="text" class="form-control input-sm"
+												style="width: 100%" id="accNo" placeholder="Account No"
+												ng-model="accNo">
+										</div>
+
+									</div>
+								</div>
+								<div class="form-group col-sm-12 noPadding"
+									ng-show="paymentMode=='C'">
+									<div class="col-sm-12 noPadding">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="transNo" class="control-label input-sm">
+												Transaction No</label>
+										</div>
+										<div class="col-sm-8 noPadding">
+											<input type="text" class="form-control input-sm"
+												style="width: 100%" id="transNo"
+												placeholder="Transaction No" ng-model="transNo">
+										</div>
+									</div>
+								</div>
+								<div class="form-group col-sm-12 noPadding"
+									>
+									<div class="col-sm-12 noPadding" ng-hide="paidStatus=='Paid'">
+										<div class="col-sm-4" style="text-align: right;">
+											<label for="transNo" class="control-label input-sm">
+												Amount Paid</label>
+										</div>
+										<div class="col-sm-8 noPadding">
+											<input type="text" class="form-control input-sm"
+												style="width: 100%" id="transNo"
+												placeholder="Amount Paid" ng-model="amount">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+
+							<button type="button" class="btn btn-info input-sm"
+								ng-show="((paidStatus!='Paid'))" 
+								style="width: 120px" ng-click="updlandInvoiceStatus()">
+								<span class="glyphicon glyphicon-arrow-right"> Save </span>
+							</button>
+							<a class="btn btn-success input-sm" ng-href="{{url}}"
+								ng-click="printlandInvoice()" target="_blank"
+								ng-show="(paidStatus!='Paid' && landStatus=='Approved')">Print  Invoice</a>
+								<a class="btn btn-success input-sm" ng-href="{{url}}"
+								ng-click="printlandInvoice()" target="_blank"
+								ng-show="(paidStatus=='Paid' && landStatus=='Approved')">Print Receipt</a>
+							<button type="button" class="btn btn-warning input-sm"
+								style="width: 100px" ng-click="cancellandInvoice()">
+								<span class="glyphicon glyphicon-remove"> Cancel </span>
+							</button>
+						</div>
+
+
+					</div>
+				</section>
+
+			</div>
+		</section>
+
+	</form>
+
+
+</div>
